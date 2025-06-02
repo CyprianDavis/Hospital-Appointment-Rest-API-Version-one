@@ -24,7 +24,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
  * 
  * @author CYPRIAN DAVIS
  * @version 1.0
- * @since 2023-05-21
+ * @since 2025-06-03
  * @see User
  */
 @Entity
