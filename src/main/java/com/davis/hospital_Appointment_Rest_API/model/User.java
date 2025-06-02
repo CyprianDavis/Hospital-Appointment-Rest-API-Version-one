@@ -80,13 +80,9 @@ public abstract class User {
      * @param district User's district/locality
      * @param street Street address component
      * @param postalCode Postal code for mail
-     * @throws IllegalArgumentException if required fields are null or empty
      */
     public User(String userName, String passWord, String contact, 
                String district, String street, String postalCode) {
-        if (userName == null || userName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
-        }
         this.userName = userName;
         this.passWord = passWord;
         this.contact = contact;
@@ -122,12 +118,9 @@ public abstract class User {
     /**
      * Sets the authentication username
      * @param userName The username to set
-     * @throws IllegalArgumentException if username is null or empty
      */
     public void setUserName(String userName) {
-        if (userName == null || userName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
-        }
+        
         this.userName = userName;
     }
 
