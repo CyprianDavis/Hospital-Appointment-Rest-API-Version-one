@@ -3,7 +3,6 @@ package com.davis.hospital_Appointment_Rest_API.model;
 import java.util.Date;
 import java.util.Set;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
