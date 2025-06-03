@@ -55,10 +55,42 @@ public class Doctor extends User {
     @JoinColumn(name = "department")
     private Department department;
     
-    /** The set of schedule entries for this doctor */
+    /**
+     * The collection of schedule entries defining this doctor's availability.
+     * <p>
+     * Represents a one-to-many relationship with {@link DoctorSchedule} where:
+     * <ul>
+     *   <li>One doctor can have multiple schedule entries</li>
+     *   <li>The relationship is mapped by the "doctor" field in DoctorSchedule</li>
+     *   <li>Uses Set to ensure unique schedule entries</li>
+     * </ul>
+     * </p>
+     * 
+     * <p><b>Usage Note:</b>
+     * Changes to this collection will be cascaded according to JPA rules.
+     * </p>
+     * 
+     * @see DoctorSchedule
+     */
     @OneToMany(mappedBy = "doctor")
     private Set<DoctorSchedule> schedules;
-    
+    /**
+     * The set of appointments scheduled with this doctor.
+     * <p>
+     * Represents a one-to-many relationship with the {@link Appointment} entity,
+     * where the foreign key is maintained by the Appointment side (mapped by "doctor" field).
+     * </p>
+     * 
+     * <p><b>Relationship Details:</b>
+     * <ul>
+     *   <li>One doctor can have many appointments</li>
+     *   <li>Appointments are managed through this bidirectional relationship</li>
+     *   <li>The Set implementation ensures unique appointments</li>
+     * </ul>
+     * </p>
+     */
+    @OneToMany(mappedBy = "doctor")
+    private Set<Appointment> appointments;
     /**
      * Constructs a new Doctor instance with basic user information.
      * 
@@ -201,4 +233,19 @@ public class Doctor extends User {
     public void setSchedules(Set<DoctorSchedule> schedules) {
         this.schedules = schedules;
     }
+
+	/**
+	 * @return the appointmets
+	 */
+	public Set<Appointment> getAppointmets() {
+		return appointmets;
+	}
+
+	/**
+	 * @param appointmets the appointmets to set
+	 */
+	public void setAppointmets(Set<Appointment> appointmets) {
+		this.appointmets = appointmets;
+	}
+    
 }
