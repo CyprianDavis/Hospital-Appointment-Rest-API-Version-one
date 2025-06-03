@@ -30,7 +30,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
  */
 @Entity
 @DiscriminatorValue("DOCTOR")
-@PrimaryKeyJoinColumn(name = "user_id") // Links to users.id
+@PrimaryKeyJoinColumn(name = "userId") // Links to users.id
 public class Doctor extends User {
     
     /** Unique identifier for the doctor record */

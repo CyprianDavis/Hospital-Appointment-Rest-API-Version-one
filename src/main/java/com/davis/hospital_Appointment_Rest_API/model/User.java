@@ -70,6 +70,7 @@ public abstract class User {
     
     /** Timestamp of last profile update */
     private Date lastUpdated;
+    private String gender;
 
     /**
      * Constructs a new User with basic information.
@@ -267,4 +268,19 @@ public abstract class User {
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+    
 }

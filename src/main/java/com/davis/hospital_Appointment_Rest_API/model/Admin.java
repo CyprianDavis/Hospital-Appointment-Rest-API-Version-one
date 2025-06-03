@@ -29,7 +29,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
  */
 @Entity
 @DiscriminatorValue("ADMIN")
-@PrimaryKeyJoinColumn(name = "user_id") // Links to users.id
+@PrimaryKeyJoinColumn(name = "userId") // Links to users.id
 public class Admin extends User {
     
     /** 
