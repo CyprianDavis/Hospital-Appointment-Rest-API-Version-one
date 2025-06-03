@@ -1,7 +1,10 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
+import java.util.Set;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 /**
@@ -60,7 +63,29 @@ public class Patient extends User {
      * @see #setBloodGroup(String)
      */
     private String bloodGroup;
-
+    /**
+     * The collection of all appointments booked by this patient.
+     * <p>
+     * Represents a one-to-many relationship with {@link Appointment} entity where:
+     * <ul>
+     *   <li>One patient can have multiple appointments</li>
+     *   <li>The relationship is managed by the "patient" field in Appointment entity</li>
+     *   <li>Uses Set implementation to ensure appointment uniqueness</li>
+     * </ul>
+     * </p>
+     * 
+     * <p><b>Relationship Details:</b>
+     * <ul>
+     *   <li>Bidirectional relationship mapped by Appointment.patient</li>
+     *   <li>Appointments are automatically associated with this patient</li>
+     *   <li>Cascading follows JPA default behavior</li>
+     * </ul>
+     * </p>
+     * 
+     * @see Appointment
+     */
+    @OneToMany(mappedBy = "patient")
+    private Set<Appointment> appointments;
     /**
      * Constructs a new Patient with complete details.
      * 
@@ -148,4 +173,19 @@ public class Patient extends User {
     public void setBloodGroup(String bloodGroup) {
         this.bloodGroup = bloodGroup;
     }
+
+	/**
+	 * @return the appointmets
+	 */
+	public Set<Appointment> getAppointmets() {
+		return appointmets;
+	}
+
+	/**
+	 * @param appointmets the appointmets to set
+	 */
+	public void setAppointmets(Set<Appointment> appointmets) {
+		this.appointmets = appointmets;
+	}
+    
 }
