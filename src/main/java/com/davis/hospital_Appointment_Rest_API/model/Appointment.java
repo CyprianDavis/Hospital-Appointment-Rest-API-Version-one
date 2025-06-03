@@ -1,9 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
-
 import java.time.LocalTime;
 import java.util.Date;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,173 +10,272 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
+/**
+ * Represents a medical appointment in the Hospital Appointment System.
+ * <p>
+ * This entity connects patients with doctors at specific time slots and tracks
+ * the appointment status and relevant notes.
+ * </p>
+ * 
+ * <p><b>Relationships:</b>
+ * <ul>
+ *   <li>Many-to-one with {@link Doctor}</li>
+ *   <li>Many-to-one with {@link Patient}</li>
+ * </ul>
+ * </p>
+ * 
+ * @author CYPRIAN DAVIS
+ * @version 1.0
+ * @since 2025-06-03
+ * @see Doctor
+ * @see Patient
+ */
 @Entity
 public class Appointment {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@ManyToOne
-	@JoinColumn(name = "doctorId")
-	private Doctor doctor;
-	@ManyToOne
-	@JoinColumn(name="patientId")
-	private Patient patient;
-	private Date date;
-	private LocalTime startTime;
-	private LocalTime endTime;
-	private String status;
-	private String notes;
-	@Temporal(TemporalType.TIME)
-	private Date createdOn;
-	@Temporal(TemporalType.TIME)
-	private Date updateOn;
-	/**
-	 * @param doctor
-	 * @param patient
-	 * @param date
-	 * @param startTime
-	 * @param endTime
-	 * @param status
-	 * @param notes
-	 * @param createdOn
-	 * @param updateOn
-	 */
-	public Appointment(Doctor doctor, Patient patient, Date date, LocalTime startTime, LocalTime endTime, String status,
-			String notes, Date createdOn, Date updateOn) {
-		this.doctor = doctor;
-		this.patient = patient;
-		this.date = date;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.status = status;
-		this.notes = notes;
-		this.createdOn = createdOn;
-		this.updateOn = updateOn;
-	}
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
-	/**
-	 * @return the doctor
-	 */
-	public Doctor getDoctor() {
-		return doctor;
-	}
-	/**
-	 * @param doctor the doctor to set
-	 */
-	public void setDoctor(Doctor doctor) {
-		this.doctor = doctor;
-	}
-	/**
-	 * @return the patient
-	 */
-	public Patient getPatient() {
-		return patient;
-	}
-	/**
-	 * @param patient the patient to set
-	 */
-	public void setPatient(Patient patient) {
-		this.patient = patient;
-	}
-	/**
-	 * @return the date
-	 */
-	public Date getDate() {
-		return date;
-	}
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	/**
-	 * @return the startTime
-	 */
-	public LocalTime getStartTime() {
-		return startTime;
-	}
-	/**
-	 * @param startTime the startTime to set
-	 */
-	public void setStartTime(LocalTime startTime) {
-		this.startTime = startTime;
-	}
-	/**
-	 * @return the endTime
-	 */
-	public LocalTime getEndTime() {
-		return endTime;
-	}
-	/**
-	 * @param endTime the endTime to set
-	 */
-	public void setEndTime(LocalTime endTime) {
-		this.endTime = endTime;
-	}
-	/**
-	 * @return the status
-	 */
-	public String getStatus() {
-		return status;
-	}
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	/**
-	 * @return the notes
-	 */
-	public String getNotes() {
-		return notes;
-	}
-	/**
-	 * @param notes the notes to set
-	 */
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-	/**
-	 * @return the createdOn
-	 */
-	public Date getCreatedOn() {
-		return createdOn;
-	}
-	/**
-	 * @param createdOn the createdOn to set
-	 */
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
-	/**
-	 * @return the updateOn
-	 */
-	public Date getUpdateOn() {
-		return updateOn;
-	}
-	/**
-	 * @param updateOn the updateOn to set
-	 */
-	public void setUpdateOn(Date updateOn) {
-		this.updateOn = updateOn;
-	}
-	
-	
-	
-	
-	
+    
+    /**
+     * Unique identifier for the appointment
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    /**
+     * The doctor assigned to this appointment
+     */
+    @ManyToOne
+    @JoinColumn(name = "doctorId")
+    private Doctor doctor;
+    
+    /**
+     * The patient who booked this appointment
+     */
+    @ManyToOne
+    @JoinColumn(name = "patientId")
+    private Patient patient;
+    
+    /**
+     * The date of the appointment
+     */
+    private Date date;
+    
+    /**
+     * The scheduled start time of the appointment
+     */
+    private LocalTime startTime;
+    
+    /**
+     * The scheduled end time of the appointment
+     */
+    private LocalTime endTime;
+    
+    /**
+     * Current status of the appointment (e.g., "Scheduled", "Completed", "Cancelled")
+     */
+    private String status;
+    
+    /**
+     * Additional notes or comments about the appointment
+     */
+    private String notes;
+    
+    /**
+     * Timestamp when the appointment was created
+     */
+    @Temporal(TemporalType.TIME)
+    private Date createdOn;
+    
+    /**
+     * Timestamp when the appointment was last updated
+     */
+    @Temporal(TemporalType.TIME)
+    private Date updateOn;
 
+    /**
+     * Constructs a new Appointment with all required fields.
+     *
+     * @param doctor The doctor assigned to the appointment
+     * @param patient The patient booking the appointment
+     * @param date The date of the appointment
+     * @param startTime The scheduled start time
+     * @param endTime The scheduled end time
+     * @param status The current status of the appointment
+     * @param notes Additional notes about the appointment
+     * @param createdOn When the appointment was created
+     * @param updateOn When the appointment was last updated
+     */
+    public Appointment(Doctor doctor, Patient patient, Date date, LocalTime startTime, 
+                     LocalTime endTime, String status, String notes, Date createdOn, 
+                     Date updateOn) {
+        this.doctor = doctor;
+        this.patient = patient;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = status;
+        this.notes = notes;
+        this.createdOn = createdOn;
+        this.updateOn = updateOn;
+    }
+
+    /**
+     * Gets the unique appointment identifier.
+     * @return The appointment ID
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the unique appointment identifier.
+     * @param id The ID to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Gets the doctor assigned to this appointment.
+     * @return The associated Doctor
+     */
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    /**
+     * Sets the doctor assigned to this appointment.
+     * @param doctor The Doctor to assign
+     */
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    /**
+     * Gets the patient who booked this appointment.
+     * @return The associated Patient
+     */
+    public Patient getPatient() {
+        return patient;
+    }
+
+    /**
+     * Sets the patient who booked this appointment.
+     * @param patient The Patient to assign
+     */
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    /**
+     * Gets the appointment date.
+     * @return The date of the appointment
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     * Sets the appointment date.
+     * @param date The date to set
+     */
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    /**
+     * Gets the scheduled start time.
+     * @return The start time
+     */
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Sets the scheduled start time.
+     * @param startTime The start time to set
+     */
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * Gets the scheduled end time.
+     * @return The end time
+     */
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * Sets the scheduled end time.
+     * @param endTime The end time to set
+     */
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    /**
+     * Gets the current appointment status.
+     * @return The status (e.g., "Scheduled", "Completed")
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the current appointment status.
+     * @param status The status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Gets the appointment notes.
+     * @return Additional notes about the appointment
+     */
+    public String getNotes() {
+        return notes;
+    }
+
+    /**
+     * Sets the appointment notes.
+     * @param notes The notes to set
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    /**
+     * Gets when the appointment was created.
+     * @return The creation timestamp
+     */
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * Sets when the appointment was created.
+     * @param createdOn The creation timestamp to set
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    /**
+     * Gets when the appointment was last updated.
+     * @return The last update timestamp
+     */
+    public Date getUpdateOn() {
+        return updateOn;
+    }
+
+    /**
+     * Sets when the appointment was last updated.
+     * @param updateOn The update timestamp to set
+     */
+    public void setUpdateOn(Date updateOn) {
+        this.updateOn = updateOn;
+    }
 }
