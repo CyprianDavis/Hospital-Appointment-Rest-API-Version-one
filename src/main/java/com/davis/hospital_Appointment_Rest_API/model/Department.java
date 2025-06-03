@@ -1,9 +1,14 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.util.Date;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 /**
  * Represents a hospital department in the Hospital Appointment System.
@@ -43,7 +48,8 @@ public class Department {
     private String contact;
     
     /** Doctor serving as the head of this department */
-    @Column(name ="HOD")
+    @OneToOne
+    @JoinColumn(name ="HOD")
     private Doctor headOfDepart;
     
     /** Timestamp when the department record was created */
@@ -51,6 +57,8 @@ public class Department {
     
     /** Timestamp when the department record was last updated */
     private Date updatedOn;
+    @OneToMany(mappedBy = "department")
+    private Set<Doctor>doctors;
     
     /**
      * Constructs a new Department with complete details.
@@ -201,4 +209,19 @@ public class Department {
     public void setUpdatedOn(Date updatedOn) {
         this.updatedOn = updatedOn;
     }
+
+	/**
+	 * @return the doctors
+	 */
+	public Set<Doctor> getDoctors() {
+		return doctors;
+	}
+
+	/**
+	 * @param doctors the doctors to set
+	 */
+	public void setDoctors(Set<Doctor> doctors) {
+		this.doctors = doctors;
+	}
+    
 }

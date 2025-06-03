@@ -2,7 +2,6 @@ package com.davis.hospital_Appointment_Rest_API.model;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 /**
@@ -32,14 +31,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "userId") // Links to users.id
 public class Admin extends User {
     
-    /** 
-     * Unique identifier for the admin record (matches user_id in parent table)
-     * @see #getId()
-     * @see #setId(String) 
-     */
-    @Id
-    private String id;
-    
+  
     /** 
      * Administrator's surname/family name 
      * @see #getSurName()
@@ -89,28 +81,10 @@ public class Admin extends User {
                 String otherName, String accessLevel) {
         super(userName, passWord, contact, district, street, postalCode);
         
-      
-        
-        this.id = id;
         this.surName = surName;
         this.givenName = givenName;
         this.otherName = otherName;
         this.accessLevel = accessLevel;
-    }
-
-    /**
-     * Gets the admin ID which corresponds to the user_id in parent table
-     * @return The admin ID (matches parent user_id)
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the admin ID which must match the user_id in parent table
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
     /**

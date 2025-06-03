@@ -2,7 +2,6 @@ package com.davis.hospital_Appointment_Rest_API.model;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 /**
@@ -33,13 +32,6 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "userId") // Links to users.id
 public class Patient extends User {
     
-    /** 
-     * Unique medical identifier for the patient 
-     * @see #getPatientId()
-     * @see #setPatientId(String)
-     */
-    @Id
-    private String patientId;
     
     /** 
      * Patient's surname/family name 
@@ -87,27 +79,10 @@ public class Patient extends User {
     public Patient(String userName, String passWord, String contact, String district, String street, String postalCode,
             String patientId, String surName, String givenName, String otherName, String bloodGroup) {
         super(userName, passWord, contact, district, street, postalCode);
-        this.patientId = patientId;
         this.surName = surName;
         this.givenName = givenName;
         this.otherName = otherName;
         this.bloodGroup = bloodGroup;
-    }
-
-    /**
-     * Gets the unique patient medical identifier
-     * @return The patient ID
-     */
-    public String getPatientId() {
-        return patientId;
-    }
-
-    /**
-     * Sets the unique patient medical identifier
-     * @param patientId The ID to set
-     */
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
     }
 
     /**

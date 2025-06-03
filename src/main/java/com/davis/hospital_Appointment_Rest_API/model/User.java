@@ -30,7 +30,7 @@ import jakarta.persistence.Table;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "userType", discriminatorType = DiscriminatorType.STRING)
 public abstract class User {
     
     /** Unique identifier for the user */
@@ -49,11 +49,7 @@ public abstract class User {
     /** Unique email address for communication */
     private String email;
     
-    /** 
-     * User type discriminator (automatically managed by JPA)
-     * @see #getUserType() 
-     */
-    private String userType;
+    
     
     /** District/Locality of the user's address */
     private String district;
@@ -221,22 +217,9 @@ public abstract class User {
         this.email = email;
     }
 
-    /**
-     * Gets the user type discriminator
-     * @return The user type (e.g., "PATIENT", "DOCTOR", "ADMIN")
-     */
-    public String getUserType() {
-        return userType;
-    }
+   
 
-    /**
-     * Sets the user type discriminator
-     * @param userType The user type to set
-     */
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
+    
     /**
      * Gets the account creation timestamp
      * @return Date when user was created

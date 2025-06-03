@@ -2,7 +2,8 @@ package com.davis.hospital_Appointment_Rest_API.model;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 /**
@@ -33,9 +34,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "userId") // Links to users.id
 public class Doctor extends User {
     
-    /** Unique identifier for the doctor record */
-    @Id
-    private String doctorId;
+    
     
     /** Doctor's surname/family name */
     private String surName;
@@ -56,6 +55,8 @@ public class Doctor extends User {
     private double consulation_fee;
     
     /** Department where the doctor practices */
+    @ManyToOne
+    @JoinColumn(name="department")
     private Department department;
     
     /**
@@ -72,21 +73,6 @@ public class Doctor extends User {
         super(userName, passWord, contact, district, street, postalCode);
     }
 
-    /**
-     * Gets the unique doctor identifier
-     * @return The doctor ID
-     */
-    public String getDoctorId() {
-        return doctorId;
-    }
-
-    /**
-     * Sets the unique doctor identifier
-     * @param doctorId The ID to set
-     */
-    public void setDoctorId(String doctorId) {
-        this.doctorId = doctorId;
-    }
 
     /**
      * Gets the doctor's surname/family name
