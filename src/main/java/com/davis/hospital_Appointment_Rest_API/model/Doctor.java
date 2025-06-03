@@ -1,188 +1,204 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
+import java.util.Set;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 /**
- * Represents a medical doctor in the Hospital Appointment System.
- * <p>
- * This entity extends the base {@link User} class and is marked with the
- * discriminator value "DOCTOR" for JPA's inheritance strategy. Doctors have
- * specialized medical attributes in addition to basic user properties.
- * </p>
+ * Represents a medical doctor entity in the Hospital Appointment System.
+ * Extends the base {@link User} class with doctor-specific attributes and relationships.
+ * Uses JOINED inheritance strategy with "DOCTOR" as the discriminator value.
  * 
- * <p><b>Inheritance Strategy:</b> JOINED (Class Table Inheritance)</p>
- * <p><b>Discriminator Value:</b> "DOCTOR"</p>
- * <p><b>Table Structure:</b>
+ * <p>The entity maps to two database tables:
  * <ul>
- *   <li>Primary table: users (contains common user fields)</li>
- *   <li>Child table: doctor (contains doctor-specific fields)</li>
+ *   <li><b>users</b> - Contains common user fields inherited from User</li>
+ *   <li><b>doctor</b> - Contains doctor-specific fields with userId as foreign key</li>
  * </ul>
  * </p>
- * 
+ *
  * @author CYPRIAN DAVIS
  * @version 1.0
  * @since 2025-06-03
  * @see User
  * @see Department
+ * @see DoctorSchedule
  */
 @Entity
 @DiscriminatorValue("DOCTOR")
-@PrimaryKeyJoinColumn(name = "userId") // Links to users.id
+@PrimaryKeyJoinColumn(name = "userId")
 public class Doctor extends User {
     
-    
-    
-    /** Doctor's surname/family name */
+    /** The doctor's surname or family name */
     private String surName;
     
-    /** Doctor's given/first name */
+    /** The doctor's given or first name */
     private String givenName;
     
-    /** Doctor's middle name(s) (optional) */
+    /** The doctor's middle name(s) (optional) */
     private String otherName;
     
-    /** Medical specialization area (e.g., "Cardiology") */
+    /** The doctor's medical specialization area (e.g., "Cardiology", "Pediatrics") */
     private String specialization;
     
-    /** Official medical license number */
+    /** The doctor's official medical license number */
     private String license_number;
     
-    /** Standard consultation fee in local currency */
+    /** The standard consultation fee in local currency units */
     private double consulation_fee;
     
-    /** Department where the doctor practices */
+    /** The department where the doctor practices */
     @ManyToOne
-    @JoinColumn(name="department")
+    @JoinColumn(name = "department")
     private Department department;
     
+    /** The set of schedule entries for this doctor */
+    @OneToMany(mappedBy = "doctor")
+    private Set<DoctorSchedule> schedules;
+    
     /**
-     * Constructs a new Doctor with basic user information.
+     * Constructs a new Doctor instance with basic user information.
      * 
-     * @param userName Unique username for authentication
-     * @param passWord Encrypted password
-     * @param contact Phone number in international format
-     * @param district User's district/locality
-     * @param street Street address component
-     * @param postalCode Postal code for mail
+     * @param userName the unique username for authentication
+     * @param passWord the encrypted password
+     * @param contact the phone number in international format
+     * @param district the user's district/locality
+     * @param street the street address component
+     * @param postalCode the postal code for mail
      */
-    public Doctor(String userName, String passWord, String contact, String district, String street, String postalCode) {
+    public Doctor(String userName, String passWord, String contact, String district, 
+                 String street, String postalCode) {
         super(userName, passWord, contact, district, street, postalCode);
     }
 
-
     /**
-     * Gets the doctor's surname/family name
-     * @return The surname
+     * Gets the doctor's surname.
+     * @return the surname/family name
      */
     public String getSurName() {
         return surName;
     }
 
     /**
-     * Sets the doctor's surname/family name
-     * @param surName The surname to set
+     * Sets the doctor's surname.
+     * @param surName the surname/family name to set
      */
     public void setSurName(String surName) {
         this.surName = surName;
     }
 
     /**
-     * Gets the doctor's given/first name
-     * @return The given name
+     * Gets the doctor's given name.
+     * @return the given/first name
      */
     public String getGivenName() {
         return givenName;
     }
 
     /**
-     * Sets the doctor's given/first name
-     * @param givenName The given name to set
+     * Sets the doctor's given name.
+     * @param givenName the given/first name to set
      */
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
 
     /**
-     * Gets the doctor's middle name(s)
-     * @return Middle name(s) or null if not provided
+     * Gets the doctor's middle name(s).
+     * @return the middle name(s), or null if not provided
      */
     public String getOtherName() {
         return otherName;
     }
 
     /**
-     * Sets the doctor's middle name(s)
-     * @param otherName Middle name(s) (optional)
+     * Sets the doctor's middle name(s).
+     * @param otherName the middle name(s) to set (optional)
      */
     public void setOtherName(String otherName) {
         this.otherName = otherName;
     }
 
     /**
-     * Gets the doctor's medical specialization
-     * @return The specialization area
+     * Gets the doctor's medical specialization.
+     * @return the specialization area
      */
     public String getSpecialization() {
         return specialization;
     }
 
     /**
-     * Sets the doctor's medical specialization
-     * @param specialization The specialization to set
+     * Sets the doctor's medical specialization.
+     * @param specialization the specialization to set
      */
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
     }
 
     /**
-     * Gets the doctor's license number
-     * @return The official license number
+     * Gets the doctor's license number.
+     * @return the official license number
      */
     public String getLicense_number() {
         return license_number;
     }
 
     /**
-     * Sets the doctor's license number
-     * @param license_number The official license number to set
+     * Sets the doctor's license number.
+     * @param license_number the official license number to set
      */
     public void setLicense_number(String license_number) {
         this.license_number = license_number;
     }
 
     /**
-     * Gets the standard consultation fee
-     * @return The fee amount in local currency
+     * Gets the standard consultation fee.
+     * @return the fee amount in local currency
      */
     public double getConsulation_fee() {
         return consulation_fee;
     }
 
     /**
-     * Sets the standard consultation fee
-     * @param consulation_fee The fee amount to set (must be positive)
+     * Sets the standard consultation fee.
+     * @param consulation_fee the fee amount to set (must be positive)
      */
     public void setConsulation_fee(double consulation_fee) {
         this.consulation_fee = consulation_fee;
     }
 
     /**
-     * Gets the associated department
-     * @return The Department where the doctor practices
+     * Gets the associated department.
+     * @return the Department where the doctor practices
      */
     public Department getDepartment() {
         return department;
     }
 
     /**
-     * Sets the associated department
-     * @param department The Department to assign
+     * Sets the associated department.
+     * @param department the Department to assign
      */
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    /**
+     * Gets the set of schedule entries for this doctor.
+     * @return the Set of DoctorSchedule objects
+     */
+    public Set<DoctorSchedule> getSchedules() {
+        return schedules;
+    }
+
+    /**
+     * Sets the schedule entries for this doctor.
+     * @param schedules the Set of DoctorSchedule objects to assign
+     */
+    public void setSchedules(Set<DoctorSchedule> schedules) {
+        this.schedules = schedules;
     }
 }
