@@ -1,5 +1,9 @@
 package com.davis.hospital_Appointment_Rest_API.repository;
 
-public interface PatientRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.davis.hospital_Appointment_Rest_API.model.Patient;
+
+public interface PatientRepository extends JpaRepository<Patient, String>{
 
 }
