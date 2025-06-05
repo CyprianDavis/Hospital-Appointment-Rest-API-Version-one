@@ -3,18 +3,84 @@ package com.davis.hospital_Appointment_Rest_API.model;
 import java.util.Date;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+/**
+ * Represents a medical prescription in the hospital appointment system.
+ * Contains medication details, administration instructions, and associated
+ * patient and doctor information.
+ */
+@Entity
 public class Prescription {
-	private Long prescriptionId;
-	private Patient patient;
-	private Doctor doctor;
-	private String dosage;
-	private String frequency;
-	private String routeOfAdministration;
-	private String duration;
-	private int quantity;
-	private String notes;
-	private Date createdOn;
-	private Date modifiedDate;
+    /**
+     * Unique identifier for the prescription (auto-generated)
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long prescriptionId;
+    
+    /**
+     * The patient who is prescribed the medication
+     */
+    @ManyToOne
+    @JoinColumn(name = " PatientId")
+    private Patient patient;
+    
+    /**
+     * The doctor who issued the prescription
+     */
+    @ManyToOne
+    @JoinColumn(name = "DoctorId")
+    private Doctor doctor;
+    
+    /**
+     * The amount of medication to be taken at one time
+     */
+    private String dosage;
+    
+    /**
+     * How often the medication should be taken
+     */
+    private String frequency;
+    
+    /**
+     * Method of administering the medication (oral, IV, topical, etc.)
+     */
+    private String routeOfAdministration;
+    
+    /**
+     * Length of time the medication should be taken
+     */
+    private String duration;
+    
+    /**
+     * Total amount of medication prescribed
+     */
+    private int quantity;
+    
+    /**
+     * Additional instructions or comments about the prescription
+     */
+    private String notes;
+    
+    /**
+     * Date and time when the prescription was originally created
+     */
+    @Temporal(TemporalType.TIME)
+    private Date createdOn;
+    
+    /**
+     * Date and time when the prescription was last modified
+     */
+    @Temporal(TemporalType.TIME)
+    private Date modifiedDate;
 	/**
 	 * @param patient
 	 * @param doctor
