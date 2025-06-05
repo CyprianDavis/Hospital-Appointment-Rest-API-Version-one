@@ -55,6 +55,39 @@ public class Doctor extends User {
     @JoinColumn(name = "department")
     private Department department;
     
+    @ManyToOne
+    @JoinColumn(name = "")
+    private Prescription prescription;
+    /**
+     * The set of medical records for patients treated by this doctor.
+     * This represents the inverse side of the bidirectional relationship with {@link MedicalRecord}.
+     * Each record in this collection references this doctor through its {@code doctor} field.
+     * 
+     * <p>The relationship is managed by the {@code doctor} field in the {@link MedicalRecord} entity,
+     * which maintains the foreign key association in the database.</p>
+     * 
+     * <p>This collection should only contain records where this doctor was the primary treating physician.</p>
+     * 
+     * @see MedicalRecord#doctor
+     */
+    @OneToMany(mappedBy = "doctor")
+    private Set<MedicalRecord> treatmentRecords;
+    /**
+     * The set of all prescriptions issued by this doctor to patients.
+     * This is the inverse side of the bidirectional relationship with {@link Prescription}.
+     * 
+     * <p>Each prescription in this collection references this doctor through its {@code doctor} field, 
+     * which maintains the foreign key relationship in the database.</p>
+     * 
+     * <p>This collection includes both active and historical prescriptions, 
+     * providing a complete record of medications prescribed by this doctor.</p>
+     * 
+     * @see Prescription#doctor  // Ensure this matches the owning side field name
+     */
+    @OneToMany(mappedBy = "doctor")
+    private Set<Prescription> prescribedMedications;
+    
+    
     /**
      * The collection of schedule entries defining this doctor's availability.
      * <p>
@@ -247,5 +280,34 @@ public class Doctor extends User {
 	public void setAppointmets(Set<Appointment> appointmets) {
 		this.appointments = appointmets;
 	}
+
+	/**
+	 * @return the treatmentRecords
+	 */
+	public Set<MedicalRecord> getTreatmentRecords() {
+		return treatmentRecords;
+	}
+
+	/**
+	 * @param treatmentRecords the treatmentRecords to set
+	 */
+	public void setTreatmentRecords(Set<MedicalRecord> treatmentRecords) {
+		this.treatmentRecords = treatmentRecords;
+	}
+
+	/**
+	 * @return the appointments
+	 */
+	public Set<Appointment> getAppointments() {
+		return appointments;
+	}
+
+	/**
+	 * @param appointments the appointments to set
+	 */
+	public void setAppointments(Set<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+	
     
 }
