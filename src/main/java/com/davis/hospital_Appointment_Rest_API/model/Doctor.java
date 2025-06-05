@@ -238,14 +238,14 @@ public class Doctor extends User {
 	 * @return the appointmets
 	 */
 	public Set<Appointment> getAppointmets() {
-		return appointmets;
+		return appointments;
 	}
 
 	/**
 	 * @param appointmets the appointmets to set
 	 */
 	public void setAppointmets(Set<Appointment> appointmets) {
-		this.appointmets = appointmets;
+		this.appointments = appointmets;
 	}
     
 }
