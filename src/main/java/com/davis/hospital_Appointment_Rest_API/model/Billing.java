@@ -2,11 +2,24 @@ package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.util.Date;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 
+@Entity
 public class Billing {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@ManyToOne
+	@JoinColumn(name = "patientId")
 	private Patient patient;
+	@ManyToOne
+	@JoinColumn(name="appointmentId")
 	private Appointment appointment;
 	private double amount;
 	private String paymentStatus;
@@ -22,7 +35,6 @@ public class Billing {
 	 */
 	public Billing(Patient patient, Appointment appointment, double amount, String paymentStatus, Date invoiceDate,
 			Date dueDate) {
-		super();
 		this.patient = patient;
 		this.appointment = appointment;
 		this.amount = amount;

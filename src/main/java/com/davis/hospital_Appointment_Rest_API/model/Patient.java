@@ -112,6 +112,20 @@ public class Patient extends User {
      */
     @OneToMany(mappedBy = "patient")
     private Set<Prescription> prescriptions;
+    /**
+     * The collection of billing records associated with this patient.
+     * This represents the inverse side of the bidirectional relationship with {@link Billing}.
+     * 
+     * <p>Each billing record in this set references this patient through its {@code patient} field,
+     * indicating that the foreign key is maintained in the Billing table.</p>
+     * 
+     * <p>This collection includes all financial transactions and invoices
+     * associated with the patient's medical services.</p>
+     * 
+     * @see Billing#patient
+     */
+    @OneToMany(mappedBy = "patient")
+    private Set<Billing> billings;
     
     /**
      * Constructs a new Patient with complete details.
@@ -255,6 +269,20 @@ public class Patient extends User {
 	 */
 	public void setPrescriptions(Set<Prescription> prescriptions) {
 		this.prescriptions = prescriptions;
+	}
+
+	/**
+	 * @return the billings
+	 */
+	public Set<Billing> getBillings() {
+		return billings;
+	}
+
+	/**
+	 * @param billings the billings to set
+	 */
+	public void setBillings(Set<Billing> billings) {
+		this.billings = billings;
 	}
 	
     

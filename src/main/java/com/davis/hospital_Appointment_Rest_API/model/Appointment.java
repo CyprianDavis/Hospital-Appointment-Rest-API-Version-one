@@ -2,12 +2,15 @@ package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
@@ -91,7 +94,20 @@ public class Appointment {
      */
     @Temporal(TemporalType.TIME)
     private Date updateOn;
-
+    /**
+     * The set of billing records associated with this appointment.
+     * Represents the inverse side of the bidirectional relationship with {@link Billing}.
+     * 
+     * <p>Each billing record in this collection references this appointment through its 
+     * {@code appointment} field, maintaining the foreign key relationship in the database.</p>
+     * 
+     * <p>This collection contains all financial charges generated from services 
+     * provided during this specific appointment.</p>
+     * 
+     * @see Billing#appointment
+     */
+    @OneToMany(mappedBy = "appointment")
+    private Set<Billing> billings;
     /**
      * Constructs a new Appointment with all required fields.
      *
@@ -278,4 +294,19 @@ public class Appointment {
     public void setUpdateOn(Date updateOn) {
         this.updateOn = updateOn;
     }
+
+	/**
+	 * @return the billings
+	 */
+	public Set<Billing> getBillings() {
+		return billings;
+	}
+
+	/**
+	 * @param billings the billings to set
+	 */
+	public void setBillings(Set<Billing> billings) {
+		this.billings = billings;
+	}
+    
 }
