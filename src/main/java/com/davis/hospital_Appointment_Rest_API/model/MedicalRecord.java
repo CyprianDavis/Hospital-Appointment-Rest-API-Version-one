@@ -2,13 +2,27 @@ package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.util.Date;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 
+@Entity
 public class MedicalRecord {
+	@Id
 	private String id;
+	@ManyToOne
+	@JoinColumn(name = "patientId")
 	private Patient patient;
+	@ManyToOne
+	@JoinColumn(name = "doctorId")
 	private Doctor doctor;
+	@ManyToOne
+	@JoinColumn(name = "appointment")
 	private Appointment appointment;
+	@ManyToOne
+	@JoinColumn(name = "prescription")
 	private Prescription prescription;
 	private String diagnosis;
 	private String testResults;

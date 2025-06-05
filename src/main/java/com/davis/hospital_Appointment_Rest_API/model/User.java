@@ -1,6 +1,8 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.util.Date;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
@@ -8,7 +10,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * Abstract base class representing a user in the Hospital Appointment System.
@@ -62,12 +67,15 @@ public abstract class User {
     private String postalCode;
     
     /** Timestamp when user account was created */
+    @Temporal(TemporalType.TIME)
     private Date createdOn;
     
     /** Timestamp of last profile update */
+    @Temporal(TemporalType.TIME)
     private Date lastUpdated;
     private String gender;
-
+    @OneToMany(mappedBy = "user")
+    private Set<Notification>notifications;
     /**
      * Constructs a new User with basic information.
      * 
@@ -261,6 +269,20 @@ public abstract class User {
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	/**
+	 * @return the notifications
+	 */
+	public Set<Notification> getNotifications() {
+		return notifications;
+	}
+
+	/**
+	 * @param notifications the notifications to set
+	 */
+	public void setNotifications(Set<Notification> notifications) {
+		this.notifications = notifications;
 	}
     
 }
