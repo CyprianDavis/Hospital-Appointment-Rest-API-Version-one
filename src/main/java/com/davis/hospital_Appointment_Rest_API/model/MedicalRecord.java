@@ -6,28 +6,74 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 
+/**
+ * Represents a medical record in the hospital appointment system.
+ * A medical record contains patient health information including diagnosis,
+ * test results, and treatment details, and is associated with a specific
+ * patient, doctor, appointment, and prescription.
+ * @author CYPRIAN DAVIS
+ */
 @Entity
 public class MedicalRecord {
-	@Id
-	private String id;
-	@ManyToOne
-	@JoinColumn(name = "patientId")
-	private Patient patient;
-	@ManyToOne
-	@JoinColumn(name = "doctorId")
-	private Doctor doctor;
-	@ManyToOne
-	@JoinColumn(name = "appointment")
-	private Appointment appointment;
-	@ManyToOne
-	@JoinColumn(name = "prescription")
-	private Prescription prescription;
-	private String diagnosis;
-	private String testResults;
-	private String note;
-	private Date recordDate;
+    /**
+     * Unique identifier for the medical record
+     */
+    @Id
+    private String id;
+    
+    /**
+     * The patient associated with this medical record
+     */
+    @ManyToOne
+    @JoinColumn(name = "patientId")
+    private Patient patient;
+    
+    /**
+     * The doctor who created or is responsible for this medical record
+     */
+    @ManyToOne
+    @JoinColumn(name = "doctorId")
+    private Doctor doctor;
+    
+    /**
+     * The appointment associated with this medical record, if applicable
+     */
+    @ManyToOne
+    @JoinColumn(name = "appointment")
+    private Appointment appointment;
+    
+    /**
+     * The prescription associated with this medical record, if applicable
+     */
+    @ManyToOne
+    @JoinColumn(name = "prescription")
+    private Prescription prescription;
+    
+    /**
+     * The diagnosis or medical condition documented in this record
+     */
+    private String diagnosis;
+    
+    /**
+     * Results of any medical tests or lab work
+     */
+    private String testResults;
+    
+    /**
+     * Additional notes or observations by the healthcare provider
+     */
+    private String note;
+    
+    /**
+     * The date and time when this medical record was created
+     */
+    @Temporal(TemporalType.TIME)
+    private Date recordDate;
+
 	/**
 	 * @param patient
 	 * @param doctor
