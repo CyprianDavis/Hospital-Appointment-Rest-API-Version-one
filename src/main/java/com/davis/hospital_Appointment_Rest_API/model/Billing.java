@@ -9,22 +9,59 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-
+/**
+ * Represents a billing record in the hospital appointment system.
+ * Contains financial information related to patient appointments and services rendered.
+ * 
+ * <p>Each billing record is associated with a specific {@link Patient} and {@link Appointment},
+ * tracking payment amounts, status, and due dates for medical services.</p>
+ */
 @Entity
 public class Billing {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@ManyToOne
-	@JoinColumn(name = "patientId")
-	private Patient patient;
-	@ManyToOne
-	@JoinColumn(name="appointmentId")
-	private Appointment appointment;
-	private double amount;
-	private String paymentStatus;
-	private Date invoiceDate;
-	private Date dueDate;
+    /**
+     * Unique identifier for the billing record (auto-generated)
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    /**
+     * The patient who is responsible for this billing record
+     */
+    @ManyToOne
+    @JoinColumn(name = "patientId")
+    private Patient patient;
+    
+    /**
+     * The appointment associated with these charges
+     */
+    @ManyToOne
+    @JoinColumn(name="appointmentId")
+    private Appointment appointment;
+    
+    /**
+     * The total amount due for services rendered
+     */
+    private double amount;
+    
+    /**
+     * Current status of payment (e.g., "PAID", "PENDING", "OVERDUE")
+     */
+    private String paymentStatus;
+    
+    /**
+     * Date when the invoice was generated
+     */
+    private Date invoiceDate;
+    
+    /**
+     * Date by which payment should be received
+     */
+    private Date dueDate;
+
+    // All existing constructors and methods below remain exactly the same
+    // ...
+}
 	/**
 	 * @param patient
 	 * @param appointment
