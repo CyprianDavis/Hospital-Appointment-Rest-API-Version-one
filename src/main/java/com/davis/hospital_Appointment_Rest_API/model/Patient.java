@@ -87,6 +87,33 @@ public class Patient extends User {
     @OneToMany(mappedBy = "patient")
     private Set<Appointment> appointments;
     /**
+     * The set of medical records associated with this patient.
+     * This is the inverse side of the bidirectional relationship with {@link MedicalRecord}.
+     * Each medical record in this set references this patient through its {@code patient} field.
+     * 
+     * The relationship is mapped by the {@code patient} field in the {@link MedicalRecord} entity,
+     * indicating that the foreign key is maintained on the MedicalRecord table.
+     * 
+     * @see MedicalRecord#patient
+     */
+    @OneToMany(mappedBy = "patient")
+    private Set<MedicalRecord> medicalRecords;
+    /**
+     * The collection of prescriptions associated with this patient.
+     * This represents the inverse side of the bidirectional relationship with {@link Prescription}.
+     * 
+     * <p>Each prescription in this set references this patient through its {@code patient} field,
+     * indicating that the foreign key is maintained in the Prescription table.</p>
+     * 
+     * <p>This collection includes all prescriptions issued to the patient,
+     * both active and historical, for complete medical record-keeping.</p>
+     * 
+     * @see Prescription#patient
+     */
+    @OneToMany(mappedBy = "patient")
+    private Set<Prescription> prescriptions;
+    
+    /**
      * Constructs a new Patient with complete details.
      * 
      * @param userName Unique username for authentication
@@ -187,5 +214,48 @@ public class Patient extends User {
 	public void setAppointmets(Set<Appointment> appointmets) {
 		this.appointments = appointmets;
 	}
+
+	/**
+	 * @return the appointments
+	 */
+	public Set<Appointment> getAppointments() {
+		return appointments;
+	}
+
+	/**
+	 * @param appointments the appointments to set
+	 */
+	public void setAppointments(Set<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+
+	/**
+	 * @return the medicalRecords
+	 */
+	public Set<MedicalRecord> getMedicalRecords() {
+		return medicalRecords;
+	}
+
+	/**
+	 * @param medicalRecords the medicalRecords to set
+	 */
+	public void setMedicalRecords(Set<MedicalRecord> medicalRecords) {
+		this.medicalRecords = medicalRecords;
+	}
+
+	/**
+	 * @return the prescriptions
+	 */
+	public Set<Prescription> getPrescriptions() {
+		return prescriptions;
+	}
+
+	/**
+	 * @param prescriptions the prescriptions to set
+	 */
+	public void setPrescriptions(Set<Prescription> prescriptions) {
+		this.prescriptions = prescriptions;
+	}
+	
     
 }
