@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -57,7 +58,7 @@ public class Department {
     /** Timestamp when the department record was last updated */
     private Date updatedOn;
     @OneToMany(mappedBy = "department")
-    private Set<Doctor>doctors;
+    private Set<Doctor>doctors = new HashSet<>();
     
     /**
      * Constructs a new Department with complete details.

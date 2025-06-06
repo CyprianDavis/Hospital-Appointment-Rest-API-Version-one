@@ -1,7 +1,11 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
-import jakarta.persistence.*;
-import java.util.Set;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Represents an authority/role in the system.
@@ -22,8 +26,7 @@ public class Authority {
     @Column(name = "name", length = 40, nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "authority", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserAuthority> userAuthorities;
+   
 
     // Constructors, getters, setters
     public Authority() {}
@@ -60,19 +63,7 @@ public class Authority {
 		this.name = name;
 	}
 
-	/**
-	 * @return the userAuthorities
-	 */
-	public Set<UserAuthority> getUserAuthorities() {
-		return userAuthorities;
-	}
 
-	/**
-	 * @param userAuthorities the userAuthorities to set
-	 */
-	public void setUserAuthorities(Set<UserAuthority> userAuthorities) {
-		this.userAuthorities = userAuthorities;
-	}
     
 
 }

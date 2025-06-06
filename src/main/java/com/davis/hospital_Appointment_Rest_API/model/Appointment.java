@@ -2,6 +2,7 @@ package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -107,7 +108,7 @@ public class Appointment {
      * @see Billing#appointment
      */
     @OneToMany(mappedBy = "appointment")
-    private Set<Billing> billings;
+    private Set<Billing> billings = new HashSet<>();
     /**
      * Constructs a new Appointment with all required fields.
      *

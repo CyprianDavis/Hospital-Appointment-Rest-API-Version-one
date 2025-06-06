@@ -1,5 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -55,9 +56,8 @@ public class Doctor extends User {
     @JoinColumn(name = "department")
     private Department department;
     
-    @ManyToOne
-    @JoinColumn(name = "")
-    private Prescription prescription;
+    @OneToMany(mappedBy = "doctorId")
+    private Set<Prescription> prescriptions =new HashSet<>();
     /**
      * The set of medical records for patients treated by this doctor.
      * This represents the inverse side of the bidirectional relationship with {@link MedicalRecord}.
@@ -307,6 +307,34 @@ public class Doctor extends User {
 	 */
 	public void setAppointments(Set<Appointment> appointments) {
 		this.appointments = appointments;
+	}
+
+	/**
+	 * @return the prescriptions
+	 */
+	public Set<Prescription> getPrescriptions() {
+		return prescriptions;
+	}
+
+	/**
+	 * @param prescriptions the prescriptions to set
+	 */
+	public void setPrescriptions(Set<Prescription> prescriptions) {
+		this.prescriptions = prescriptions;
+	}
+
+	/**
+	 * @return the prescribedMedications
+	 */
+	public Set<Prescription> getPrescribedMedications() {
+		return prescribedMedications;
+	}
+
+	/**
+	 * @param prescribedMedications the prescribedMedications to set
+	 */
+	public void setPrescribedMedications(Set<Prescription> prescribedMedications) {
+		this.prescribedMedications = prescribedMedications;
 	}
 	
     
