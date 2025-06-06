@@ -59,9 +59,7 @@ public class Billing {
      */
     private Date dueDate;
 
-    // All existing constructors and methods below remain exactly the same
-    // ...
-}
+    
 	/**
 	 * @param patient
 	 * @param appointment
