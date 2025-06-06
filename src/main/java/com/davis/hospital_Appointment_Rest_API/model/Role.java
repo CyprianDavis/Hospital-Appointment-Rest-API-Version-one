@@ -14,25 +14,45 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+/**
+ * Entity class representing a Role in the system.
+ * <p>
+ * Roles are used to group authorities/permissions and assign them to users.
+ * This class maps to the "Roles" table in the database.
+ * </p>
+ */
 @Entity
 @Table(name = "Roles")
 public class Role {
 
+    /**
+     * Unique identifier for the role
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Name of the role (must be unique)
+     */
     @Column(name = "name", length = 40, nullable = false, unique = true)
     private String name;
 
+    /**
+     * Description of the role's purpose
+     */
     @Column(name = "description", length = 200)
     private String description;
 
-    // Many-to-Many relationship with Users
+    /**
+     * Users assigned to this role (inverse side of relationship)
+     */
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 
-    // Many-to-Many relationship with Authorities
+    /**
+     * Authorities/permissions granted by this role
+     */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "RoleAuthority",
@@ -41,83 +61,99 @@ public class Role {
     )
     private Set<Authority> authorities = new HashSet<>();
 
-    // Constructors
+    /**
+     * Default constructor
+     */
     public Role() {
     }
 
+    /**
+     * Constructor with name and description
+     * @param name The name of the role
+     * @param description The description of the role
+     */
     public Role(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * Gets the role ID
+     * @return The role ID
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * Sets the role ID
+     * @param id The ID to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Gets the role name
+     * @return The role name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Sets the role name
+     * @param name The name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * Gets the role description
+     * @return The role description
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * Sets the role description
+     * @param description The description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	/**
-	 * @return the users
-	 */
-	public Set<User> getUsers() {
-		return users;
-	}
+    /**
+     * Gets the users assigned to this role
+     * @return Set of users
+     */
+    public Set<User> getUsers() {
+        return users;
+    }
 
-	/**
-	 * @param users the users to set
-	 */
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
+    /**
+     * Sets the users assigned to this role
+     * @param users The set of users to assign
+     */
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 
-	/**
-	 * @return the authorities
-	 */
-	public Set<Authority> getAuthorities() {
-		return authorities;
-	}
+    /**
+     * Gets the authorities granted by this role
+     * @return Set of authorities
+     */
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
 
-	/**
-	 * @param authorities the authorities to set
-	 */
-	public void setAuthorities(Set<Authority> authorities) {
-		this.authorities = authorities;
-	}
-    
+    /**
+     * Sets the authorities granted by this role
+     * @param authorities The set of authorities to grant
+     */
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
 }
