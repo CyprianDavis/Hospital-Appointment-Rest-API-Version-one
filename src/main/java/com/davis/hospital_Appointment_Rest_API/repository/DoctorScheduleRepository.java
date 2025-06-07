@@ -83,7 +83,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
     @Query("SELECT ds FROM DoctorSchedule ds WHERE " +
            "LOWER(ds.doctor.surName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
            "LOWER(ds.doctor.givenName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
-           "LOWER(ds.doctor.otherName) LIKE LOWER(CONCAT('%', :nameTerm, '%'))")
+           "LOWER(ds.doctor.userId) LIKE LOWER(CONCAT('%', :nameTerm, '%'))")
     List<DoctorSchedule> searchByDoctorName(@Param("nameTerm") String nameTerm);
     
     /**
