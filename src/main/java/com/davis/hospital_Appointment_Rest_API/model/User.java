@@ -57,6 +57,12 @@ public abstract class User {
     private String postalCode;
     
     /**
+     * Represents the current status of the user account.
+     * Possible values might include: "ACTIVE", "INACTIVE", "SUSPENDED", "PENDING_VERIFICATION", etc.
+     * The exact values depend on the business logic of the application.
+     */
+    private String status;
+    /**
      * Timestamp recording when the user account was initially created in the system.
      * <p>
      * This field is automatically set to the current time when the user entity is first persisted.
@@ -398,5 +404,48 @@ public abstract class User {
 	public void setNotifications(Set<Notification> notifications) {
 		this.notifications = notifications;
 	}
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	/**
+	 * @return the roles
+	 */
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	/**
+	 * @param roles the roles to set
+	 */
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	/**
+	 * @return the authorities
+	 */
+	public Set<Authority> getAuthorities() {
+		return authorities;
+	}
+
+	/**
+	 * @param authorities the authorities to set
+	 */
+	public void setAuthorities(Set<Authority> authorities) {
+		this.authorities = authorities;
+	}
+	
     
 }
