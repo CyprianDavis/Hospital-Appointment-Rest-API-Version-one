@@ -93,10 +93,4 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      */
     List<DoctorSchedule> findByDayOfWeek(String dayOfWeek);
     
-    /**
-     * Finds all schedules for a specific doctor by doctor ID
-     * @param doctorId the doctor's ID
-     * @return list of matching schedules (empty if none found)
-     */
-    List<DoctorSchedule> findByDoctorId(Long doctorId);
 }

@@ -56,7 +56,7 @@ public class Doctor extends User {
     @JoinColumn(name = "department")
     private Department department;
     
-    @OneToMany(mappedBy = "doctorId")
+    @OneToMany(mappedBy = "doctor")
     private Set<Prescription> prescriptions =new HashSet<>();
     /**
      * The set of medical records for patients treated by this doctor.

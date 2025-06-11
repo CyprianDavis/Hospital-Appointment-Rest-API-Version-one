@@ -36,7 +36,7 @@ public class Department {
     private String departId;
     
     /** Name of the department (e.g., "Cardiology") */
-    private String department;
+    private String name;
     
     /** Detailed description of the department's services */
     private String description;
@@ -73,7 +73,7 @@ public class Department {
      */
     public Department(String department, String description, String locactionCode, String contact, Doctor headOfDepart,
             Date createdOn, Date updatedOn) {
-        this.department = department;
+        this.name = department;
         this.description = description;
         this.locactionCode = locactionCode;
         this.contact = contact;
@@ -103,7 +103,7 @@ public class Department {
      * @return The department name
      */
     public String getDepartment() {
-        return department;
+        return name;
     }
     
     /**
@@ -111,7 +111,7 @@ public class Department {
      * @param department The name to set
      */
     public void setDepartment(String department) {
-        this.department = department;
+        this.name = department;
     }
     
     /**

@@ -21,6 +21,6 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return an {@link Optional} containing the matching user if found,
      *         or empty {@link Optional} if no user matches the criteria
      */
-    @Query("SELECT u FROM User u WHERE u.username = :user OR u.email = :user")
-    Optional<User> findByUserOrEmail(@Param("user") String user);
+    @Query("SELECT u FROM User u WHERE u.userName = :user OR u.email = :user")
+    Optional<User> findByUserNameOrEmail(@Param("user") String user);
 }
