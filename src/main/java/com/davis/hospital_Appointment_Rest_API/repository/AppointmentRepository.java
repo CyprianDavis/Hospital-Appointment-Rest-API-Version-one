@@ -7,6 +7,8 @@ import com.davis.hospital_Appointment_Rest_API.model.Appointment;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
+	
+	
 
 	
 }
