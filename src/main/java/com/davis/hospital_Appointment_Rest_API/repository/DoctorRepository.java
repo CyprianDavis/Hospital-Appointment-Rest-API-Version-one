@@ -1,7 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.repository;
 
-import java.util.Collection;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -53,15 +53,27 @@ public interface DoctorRepository extends JpaRepository<Doctor, String> {
    
 
     /**
-     * Searches for doctors by matching any of the provided name components
+     * Searches for doctors by matching a single name term (case-insensitive, partial match)
      * against the surname, given name, or other name fields.
-     * 
-     * @param nameComponents the collection of name components to match
-     * @return list of doctors matching any of the name components
+     *
+     * <p>
+     * The search term is matched using partial string comparison on the following fields:
+     * <ul>
+     *   <li>Surname (family name)</li>
+     *   <li>Given name (first name)</li>
+     *   <li>Other name (middle name)</li>
+     * </ul>
+     * Matching is case-insensitive and allows the term to appear anywhere within the name fields.
+     * </p>
+     *
+     * @param name the name term to match (partial, case-insensitive)
+     * @return a list of doctors whose name fields contain the provided term
      */
     @Query("SELECT d FROM Doctor d WHERE " +
-    		"LOWER(d.surName) IN :names OR " +
-    		"LOWER(d.givenName) IN :names OR " +
-    		"LOWER(d.otherName) IN :names")
-       List<Doctor> searchByName(@Param("names") Collection<String> nameComponents);
+           "LOWER(d.surName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+           "LOWER(d.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+           "LOWER(d.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Doctor> searchByName(@Param("name") String name);
+
+
 }
