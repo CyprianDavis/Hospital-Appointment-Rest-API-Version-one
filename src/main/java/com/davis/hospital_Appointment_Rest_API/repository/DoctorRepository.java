@@ -1,7 +1,11 @@
 package com.davis.hospital_Appointment_Rest_API.repository;
 
+import java.util.Collection;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 
 /**
@@ -46,22 +50,18 @@ public interface DoctorRepository extends JpaRepository<Doctor, String> {
      */
     List<Doctor> findBySpecialization(String specialization);
     
+   
+
     /**
-     * Finds doctors matching any of the provided name components.
+     * Searches for doctors by matching any of the provided name components
+     * against the surname, given name, or other name fields.
      * 
-     * <p>Search is performed across three name fields:
-     * <ul>
-     *   <li>Surname (family name)</li>
-     *   <li>Given name (first name)</li>
-     *   <li>Other name (middle name)</li>
-     * </ul>
-     * </p>
-     * 
-     * @param surName the surname to match (can be null)
-     * @param givenName the given name to match (can be null)
-     * @param otherName the other name to match (can be null)
-     * @return list of doctors matching any of the provided name components
-     *         (empty if no matches found)
+     * @param nameComponents the collection of name components to match
+     * @return list of doctors matching any of the name components
      */
-    List<Doctor> findBySurNameOrGivenNameOrOtherName(String surName, String givenName, String otherName);
+    @Query("SELECT d FROM Doctor d WHERE " +
+    		"LOWER(d.surName) IN :names OR " +
+    		"LOWER(d.givenName) IN :names OR " +
+    		"LOWER(d.otherName) IN :names")
+       List<Doctor> searchByName(@Param("names") Collection<String> nameComponents);
 }
