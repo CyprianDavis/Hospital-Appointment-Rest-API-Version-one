@@ -1,4 +1,4 @@
-package com.davis.hospital_Appointment_Rest_API.service.imp;
+package com.davis.hospital_Appointment_Rest_API.service;
 
 import com.davis.hospital_Appointment_Rest_API.model.User;
 
