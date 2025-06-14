@@ -13,9 +13,9 @@ import com.davis.hospital_Appointment_Rest_API.model.Billing;
 public interface BillingRepository extends JpaRepository<Billing, Long> {
 	
 	@Query("SELECT b FROM Billing b WHERE "
-			+  "LOWER(d.surName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-	           "LOWER(d.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-	           "LOWER(d.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
+			+  "LOWER(d.patient.surName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+	           "LOWER(d.patient.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+	           "LOWER(d.patient.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
 	List<Billing> searchByPatientName(@Param("name") String name);
 	
 
