@@ -43,7 +43,9 @@ public abstract class User {
     
     /** Unique email address for communication */
     private String email;
-    
+    /**Role assigned to this user for authorization and access control.*/
+    @OneToOne
+    private Role role;
     
     
     /** District/Locality of the user's address */
@@ -121,38 +123,6 @@ public abstract class User {
     @OneToMany(mappedBy = "user")
     private Set<Notification> notifications = new HashSet<>();
 
-    /**
-     * Roles assigned to this user for authorization and access control.
-     * <p>
-     * Represents a many-to-many relationship between User and Role entities,
-     * maintained through the UserRole join table. The relationship is configured
-     * for lazy fetching to optimize performance.
-     * </p>
-     * 
-     * <p><b>Join Table Details:</b></p>
-     * <ul>
-     *   <li>Table name: "UserRole"</li>
-     *   <li>Join column: "userId" (references User.userId)</li>
-     *   <li>Inverse join column: "roleId" (references Role.id)</li>
-     * </ul>
-     * 
-     * <p><b>Usage Notes:</b></p>
-     * <ul>
-     *   <li>Roles are additive - a user gains all permissions from all assigned roles</li>
-     *   <li>Changes to this collection directly affect the join table</li>
-     *   <li>Use helper methods (addRole/removeRole) to maintain bidirectional consistency</li>
-     * </ul>
-     * 
-     * @see Role
-     * @see FetchType#LAZY
-     */
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "UserRole",
-        joinColumns = @JoinColumn(name = "userId"),
-        inverseJoinColumns = @JoinColumn(name = "roleId")
-    )
-    private Set<Role> roles = new HashSet<>();
     /**
      * Collection of direct authorities (permissions) assigned to this user.
      * <p>
@@ -411,26 +381,27 @@ public abstract class User {
 	public String getStatus() {
 		return status;
 	}
+	
+
+	/**
+	 * @return the role
+	 */
+	public Role getRole() {
+		return role;
+	}
+
+	/**
+	 * @param role the role to set
+	 */
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
 	/**
 	 * @param status the status to set
 	 */
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	/**
-	 * @return the roles
-	 */
-	public Set<Role> getRoles() {
-		return roles;
-	}
-
-	/**
-	 * @param roles the roles to set
-	 */
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
 	}
 
 	/**

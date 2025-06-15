@@ -4,14 +4,20 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 import com.davis.hospital_Appointment_Rest_API.model.User;
+
+
 
 /**
  * Repository interface for {@link User} entities that provides CRUD operations
  * and custom query methods for user management.
  * 
  * @author CYPRIAN DAVIS
+ * 
  */
+@Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
     /**
@@ -23,4 +29,6 @@ public interface UserRepository extends JpaRepository<User, String> {
      */
     @Query("SELECT u FROM User u WHERE u.userName = :user OR u.email = :user")
     Optional<User> findByUserNameOrEmail(@Param("user") String user);
+    
+    Optional<User>   findByUserName(String userName);
 }

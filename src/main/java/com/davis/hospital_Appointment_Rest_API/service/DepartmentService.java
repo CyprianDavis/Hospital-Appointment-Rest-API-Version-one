@@ -11,7 +11,7 @@ import com.davis.hospital_Appointment_Rest_API.model.Department;
  * @param <String> the type of department identifier
  * @author CYPRIAN DAVIS
  */
-public interface DepartmentService extends Service<Department, String> {
+public interface DepartmentService extends Service<Department> {
 
     /**
      * Retrieves a department by its exact name.

@@ -8,7 +8,7 @@ import com.davis.hospital_Appointment_Rest_API.model.User;
  * 
  * @author CYPRIAN DAVIS
  */
-public interface UserService extends Service<User, String> {
+public interface UserService extends Service<User> {
 
     /**
      * Finds a user by their username or email address.

@@ -9,15 +9,8 @@ import java.util.List;
  * @param <I> the type of the entity's identifier (typically Long or String)
  * @author CYPRIAN DAVIS
  */
-public interface Service<T,I> {
-    /**
-     * Retrieves an entity by its unique identifier.
-     * 
-     * @param i the identifier of the entity to be retrieved
-     * @return the entity with the given identifier or null if not found
-     */
-    T findById(I i);
-    
+public interface Service<T> {
+   
     /**
      * Retrieves all entities of type T.
      * 

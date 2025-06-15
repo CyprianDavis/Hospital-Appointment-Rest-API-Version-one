@@ -13,7 +13,7 @@ import com.davis.hospital_Appointment_Rest_API.model.Doctor;
  * 
  * @author CYPRIAN DAVIS
  */
-public interface DoctorService extends Service<Doctor, String> {
+public interface DoctorService extends Service<Doctor> {
     
     /**
      * Searches for doctors by their specialization.
