@@ -44,11 +44,6 @@ public class Role {
     @Column(name = "description", length = 200)
     private String description;
 
-    /**
-     * Users assigned to this role (inverse side of relationship)
-     */
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
 
     /**
      * Authorities/permissions granted by this role
@@ -123,22 +118,6 @@ public class Role {
      */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * Gets the users assigned to this role
-     * @return Set of users
-     */
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    /**
-     * Sets the users assigned to this role
-     * @param users The set of users to assign
-     */
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 
     /**
