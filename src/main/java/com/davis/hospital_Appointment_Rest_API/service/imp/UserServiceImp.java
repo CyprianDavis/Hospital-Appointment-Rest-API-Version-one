@@ -108,6 +108,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
         if (user == null) {
             throw new IllegalArgumentException("User must not be null");
         }
+        
         return userRepository.save(user);
     }
 }
