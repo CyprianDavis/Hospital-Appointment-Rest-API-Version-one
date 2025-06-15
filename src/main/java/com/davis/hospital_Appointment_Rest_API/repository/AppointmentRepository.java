@@ -16,15 +16,15 @@ import com.davis.hospital_Appointment_Rest_API.model.Appointment;
 public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
 	
 	@Query("SELECT a FROM Appointment a WHERE "
-			+  "LOWER(d.patient.surName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-	           "LOWER(d.patient.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-	           "LOWER(d.patient.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
+			+  "LOWER(a.patient.surName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+	           "LOWER(a.patient.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+	           "LOWER(a.patient.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
 	List<Appointment> searchByPatientName(@Param("name")String name);
 	
 	@Query("SELECT a FROM Appointment a WHERE "
-			+  "LOWER(d.doctor.surName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-	           "LOWER(d.doctor.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-	           "LOWER(d.doctor.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
+			+  "LOWER(a.doctor.surName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+	           "LOWER(a.doctor.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+	           "LOWER(a.doctor.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
 	List<Appointment> searchByDoctorName(@Param("name")String name);
 	
 	
