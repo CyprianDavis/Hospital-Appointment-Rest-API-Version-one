@@ -95,4 +95,19 @@ public class UserServiceImp implements UserDetailsService, UserService {
         }
         return userRepository.updateUserStatus(userName, status) > 0;
     }
+
+    /**
+     * Saves a user entity to the database.
+     *
+     * @param user the user entity to be saved (must not be null)
+     * @return the saved user entity
+     * @throws IllegalArgumentException if the user parameter is null
+     */
+    @Override
+    public User save(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User must not be null");
+        }
+        return userRepository.save(user);
+    }
 }
