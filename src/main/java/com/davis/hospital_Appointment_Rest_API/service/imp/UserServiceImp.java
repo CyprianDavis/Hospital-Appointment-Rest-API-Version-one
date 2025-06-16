@@ -1,5 +1,9 @@
 package com.davis.hospital_Appointment_Rest_API.service.imp;
 
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.davis.hospital_Appointment_Rest_API.config.IdGeneration;
 import com.davis.hospital_Appointment_Rest_API.model.User;
 import com.davis.hospital_Appointment_Rest_API.repository.UserRepository;
 import com.davis.hospital_Appointment_Rest_API.service.UserService;
@@ -27,6 +33,9 @@ public class UserServiceImp implements UserDetailsService, UserService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private IdGeneration idGeneration;
     
     /**
      * Loads user details by username for Spring Security authentication.
@@ -108,7 +117,39 @@ public class UserServiceImp implements UserDetailsService, UserService {
         if (user == null) {
             throw new IllegalArgumentException("User must not be null");
         }
+        //Generate User Id
+        int year = Year.now().getValue();
+        long auto_id = idGeneration.getNextIdNumber("userId");
+        user.setUserId(getUserId(auto_id, year));
+        //Set creation date and Status
+        
+        LocalDateTime now = LocalDateTime.now();
+        user.setCreatedOn(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+        user.setStatus("ACTIVE");
+        
+        
         
         return userRepository.save(user);
+    }
+
+    /**
+     * Generates a unique User ID based on the given ID and year.
+     *
+     * @param id    The unique ID number.
+     * @param year  The current year.
+     * @return A formatted User ID.
+     */
+    private String getUserId(long id, int year) {
+        if (id <= 9) {
+            return "U0000" + id + "" + year;
+        } else if (id >= 10 && id <= 99) {
+            return "U000" + id + "" + year;
+        } else if (id >= 100 && id <= 999) {
+            return "U00" + id + "" + year;
+        } else if (id >= 1000 && id <= 9999) {
+            return "U0" + id + "" + year;
+        } else {
+            return "U" + id + "" + year;
+        }
     }
 }

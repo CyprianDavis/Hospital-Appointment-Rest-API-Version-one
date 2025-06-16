@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -33,7 +35,8 @@ import jakarta.persistence.OneToOne;
 public class Department {
     /** Unique identifier for the department */
     @Id
-    private String departId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long departId;
     
     /** Name of the department (e.g., "Cardiology") */
     private String name;
@@ -86,7 +89,7 @@ public class Department {
      * Gets the unique department identifier
      * @return The department ID
      */
-    public String getDepartId() {
+    public Long getDepartId() {
         return departId;
     }
     
@@ -94,7 +97,7 @@ public class Department {
      * Sets the unique department identifier
      * @param departId The ID to set
      */
-    public void setDepartId(String departId) {
+    public void setDepartId(Long departId) {
         this.departId = departId;
     }
     

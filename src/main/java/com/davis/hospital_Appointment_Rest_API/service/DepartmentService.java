@@ -1,5 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.service;
 
+import java.util.Optional;
+
 import com.davis.hospital_Appointment_Rest_API.model.Department;
 
 /**
@@ -20,7 +22,7 @@ public interface DepartmentService extends Service<Department> {
      * @return the department with the specified name, or {@code null} if not found
      * @throws IllegalArgumentException if the department name parameter is null or empty
      */
-    Department findByName(String department);
+    Optional<Department> findByName(String department);
 
     /**
      * Retrieves a department by its unique location code.
@@ -29,5 +31,5 @@ public interface DepartmentService extends Service<Department> {
      * @return the department with the specified location code, or {@code null} if not found
      * @throws IllegalArgumentException if the location code parameter is null or empty
      */
-    Department findByLocationCode(String code);
+     Optional<Department> findByLocationCode(String code);
 }
