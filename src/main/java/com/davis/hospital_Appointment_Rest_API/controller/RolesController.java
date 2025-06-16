@@ -33,7 +33,7 @@ public class RolesController {
 			}
 			else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).
-                        body("User registration failed");
+                        body("Role registration failed");
 			}
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
