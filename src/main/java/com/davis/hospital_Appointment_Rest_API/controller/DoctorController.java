@@ -18,6 +18,10 @@ import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorServiceImp;
 public class DoctorController {
 	@Autowired
 	private DoctorServiceImp doctorServiceImp;
+	 @GetMapping("/doctor")
+	 public List<Doctor> findAll(){
+			return doctorServiceImp.findAll();
+		}
 	@PostMapping("/doctor")
 	public ResponseEntity<String> addDoctor(@RequestBody Doctor doctor){
 		try {
@@ -35,15 +39,12 @@ public class DoctorController {
 					.body("An exception occurred: "+e.getMessage());
 		}
 	}
-	 @GetMapping
-	public List<Doctor> findAll(){
-		return doctorServiceImp.findAll();
-	}
+	
 	@GetMapping("/specialization")
 	public List<Doctor> getBySpecialization(@PathVariable("specialization") String specialization){
 		return doctorServiceImp.searchBySpecialization(specialization);
 	}
-	@GetMapping("/name")
+	@GetMapping("/doctorName")
 	public List<Doctor> getDoctorByName(@PathVariable("name") String names){
 		return doctorServiceImp.searchByNames(names);
 		

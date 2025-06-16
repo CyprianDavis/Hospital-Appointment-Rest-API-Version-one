@@ -20,11 +20,11 @@ public class DepartmentController {
 	@Autowired
 	private DepartmentServiceImp departmentServiceImp;
 	
-	@GetMapping("/department")
+	@GetMapping
 	public List<Department> getDepartments(){
 		return departmentServiceImp.findAll();
 	}
-	@PostMapping
+	@PostMapping("/department")
 	public ResponseEntity<String> addDepartment(@RequestBody Department depart){
 		try {
 			if(depart.equals(departmentServiceImp.save(depart))) {
@@ -42,11 +42,11 @@ public class DepartmentController {
 		}
 		
 	}
-	@GetMapping
+	@GetMapping("/departName")
 	public Optional<Department> getDepartmentByName(@PathVariable("name")String depart){
 		return departmentServiceImp.findByName(depart);
 	}
-	@GetMapping
+	@GetMapping("/locationCode")
 	public Optional<Department> getDepartmentByLocationCode(@PathVariable("code")String code){
 		return departmentServiceImp.findByLocationCode(code);
 		

@@ -23,7 +23,7 @@ public class RolesController {
 	public List<Role> getRoles(){
 		return roleServiceImp.findAll();
 	}
-	@PostMapping
+	@PostMapping("/role")
 	public ResponseEntity<String> addRole(@RequestBody Role role){
 		try {
 			if(role.equals(roleServiceImp.save(role))){
@@ -41,7 +41,7 @@ public class RolesController {
 		}
 		
 	}
-	@GetMapping
+	@GetMapping("/roleName")
 	public Role getByName(@PathVariable("name")String name) {
 		return roleServiceImp.findByName(name);
 		

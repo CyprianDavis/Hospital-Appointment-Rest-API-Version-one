@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.davis.hospital_Appointment_Rest_API.config.ProjectSecurityConfig;
+
 import com.davis.hospital_Appointment_Rest_API.model.Authority;
 import com.davis.hospital_Appointment_Rest_API.service.imp.AuthorityServieImp;
 
@@ -43,7 +43,7 @@ public class AuthorityController {
 				.body("An exception occurred: "+e.getMessage());
 	}
 		}
-	@GetMapping
+	@GetMapping("/name")
 	public Authority getByName(@PathVariable("name") String name) {
 		return authorityServieImp.findByName(name);
 		
