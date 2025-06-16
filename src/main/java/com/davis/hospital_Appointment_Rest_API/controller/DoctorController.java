@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorServiceImp;
 
-@RestController
+@RestController("/doctor")
 public class DoctorController {
 	@Autowired
 	private DoctorServiceImp doctorServiceImp;
