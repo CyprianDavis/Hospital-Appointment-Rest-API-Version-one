@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.repository.DoctorScheduleRepository;
@@ -12,7 +13,7 @@ import com.davis.hospital_Appointment_Rest_API.service.DoctorScheduleService;
 /**
  * @author CYPRIAN DAVIS
  */
-
+@Service
 public class DoctorScheduleServiceImp  implements DoctorScheduleService{
 	@Autowired
 	private DoctorScheduleRepository doctorScheduleRepository;

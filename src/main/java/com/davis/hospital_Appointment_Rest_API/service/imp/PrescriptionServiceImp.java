@@ -6,11 +6,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.davis.hospital_Appointment_Rest_API.model.Prescription;
 import com.davis.hospital_Appointment_Rest_API.repository.PrescriptionRepository;
 import com.davis.hospital_Appointment_Rest_API.service.PrescriptionService;
- 
+ /**
+  * @author CYPRIAN DAVIS
+  */
+@Service
 public class PrescriptionServiceImp implements PrescriptionService {
 	@Autowired
 	private PrescriptionRepository prescriptionRepository;

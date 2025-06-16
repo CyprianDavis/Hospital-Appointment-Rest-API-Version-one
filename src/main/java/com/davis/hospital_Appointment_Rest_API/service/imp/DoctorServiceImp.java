@@ -4,12 +4,15 @@ package com.davis.hospital_Appointment_Rest_API.service.imp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.repository.DoctorRepository;
 import com.davis.hospital_Appointment_Rest_API.service.DoctorService;
-
-
+/**
+ * @author CYPRIAN DAVIS
+ */
+@Service
 public class DoctorServiceImp implements DoctorService{
 	@Autowired
 	private DoctorRepository doctorRepository;

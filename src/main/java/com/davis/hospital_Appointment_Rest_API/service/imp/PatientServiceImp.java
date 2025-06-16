@@ -3,6 +3,7 @@ package com.davis.hospital_Appointment_Rest_API.service.imp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.davis.hospital_Appointment_Rest_API.model.Patient;
 import com.davis.hospital_Appointment_Rest_API.repository.PatientRepository;
@@ -10,6 +11,7 @@ import com.davis.hospital_Appointment_Rest_API.service.PatientService;
 /**
  * @author CYPRIAN DAVIS
  */
+@Service
 public class PatientServiceImp implements PatientService{
 	@Autowired
 	private PatientRepository patientRepository;
