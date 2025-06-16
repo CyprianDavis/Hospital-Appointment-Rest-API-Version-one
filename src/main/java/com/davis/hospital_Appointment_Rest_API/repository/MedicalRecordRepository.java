@@ -26,7 +26,7 @@ import com.davis.hospital_Appointment_Rest_API.model.MedicalRecord;
  * @see MedicalRecord
  * @see JpaRepository
  */
-public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, String> {
+public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
 
     /**
      * Searches medical records by patient name fields with partial matching and case insensitivity.
