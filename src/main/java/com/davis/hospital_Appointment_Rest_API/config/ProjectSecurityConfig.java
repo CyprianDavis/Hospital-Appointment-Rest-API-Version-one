@@ -13,7 +13,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class ProjectSecurityConfig {
 	@Bean
 	SecurityFilterChain deSecurityFilterChain(HttpSecurity http) throws Exception{
-		http.csrf(csrfConfig -> csrfConfig.disable());
+		http.csrf(csrfConfig -> csrfConfig.disable())
+		.authorizeHttpRequests((requests)-> requests
+				.requestMatchers("/signUp").permitAll()
+				);
 				
 		http.formLogin(withDefaults());
 		http.httpBasic(withDefaults());

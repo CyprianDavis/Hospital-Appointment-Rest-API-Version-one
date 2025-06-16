@@ -86,7 +86,7 @@ public abstract class User {
      * @see TemporalType#TIME
      */
     @Temporal(TemporalType.TIME)
-    private Date lastUpdated;
+    private Date updatedOn;
 
     /**
      * Gender identification of the user.
@@ -336,7 +336,7 @@ public abstract class User {
      * @return Date of last profile update
      */
     public Date getLastUpdated() {
-        return lastUpdated;
+        return updatedOn;
     }
 
     /**
@@ -344,7 +344,7 @@ public abstract class User {
      * @param lastUpdated Date of last update
      */
     public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+        this.updatedOn = lastUpdated;
     }
 
 	/**

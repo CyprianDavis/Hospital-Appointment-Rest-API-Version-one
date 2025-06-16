@@ -9,7 +9,7 @@ import java.util.Optional;
  * Provides CRUD operations and custom query methods for Department management.
  * @author CYPRIAN DAVIS
  */
-public interface DepartmentRepository extends JpaRepository<Department, String> {
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     /**
      * Finds a department by its name (case-insensitive match).

@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.davis.hospital_Appointment_Rest_API.config.IdGeneration;
@@ -36,6 +37,8 @@ public class UserServiceImp implements UserDetailsService, UserService {
     
     @Autowired
     private IdGeneration idGeneration;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     /**
      * Loads user details by username for Spring Security authentication.
@@ -127,6 +130,9 @@ public class UserServiceImp implements UserDetailsService, UserService {
         user.setCreatedOn(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
         user.setStatus("ACTIVE");
         
+        //Hash User password
+        String hashPwdString = passwordEncoder.encode(user.getPassWord());
+        user.setPassWord(hashPwdString);
         
         
         return userRepository.save(user);
