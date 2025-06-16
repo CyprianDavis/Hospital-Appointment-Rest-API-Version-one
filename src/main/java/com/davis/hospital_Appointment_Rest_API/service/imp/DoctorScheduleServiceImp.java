@@ -26,6 +26,7 @@ public class DoctorScheduleServiceImp  implements DoctorScheduleService,Service<
 	@Override
 	public DoctorSchedule save(DoctorSchedule schedule) {
 		// TODO Auto-generated method stub
+		
 		return doctorScheduleRepository.save(schedule);
 	}
 
