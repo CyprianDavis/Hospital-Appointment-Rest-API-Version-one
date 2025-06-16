@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.repository.DoctorRepository;
 import com.davis.hospital_Appointment_Rest_API.service.DoctorService;
-import com.davis.hospital_Appointment_Rest_API.service.Service;
 
 
-public class DoctorServiceImp implements DoctorService,Service<Doctor>{
+public class DoctorServiceImp implements DoctorService{
 	@Autowired
 	private DoctorRepository doctorRepository;
 

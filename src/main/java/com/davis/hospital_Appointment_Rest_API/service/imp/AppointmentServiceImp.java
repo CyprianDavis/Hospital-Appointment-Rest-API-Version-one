@@ -10,11 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.davis.hospital_Appointment_Rest_API.model.Appointment;
 import com.davis.hospital_Appointment_Rest_API.repository.AppointmentRepository;
 import com.davis.hospital_Appointment_Rest_API.service.AppointmentService;
-import com.davis.hospital_Appointment_Rest_API.service.Service;
 /**
  * @author CYPRIAN DAVIS
  */
-public class AppointmentServiceImp implements AppointmentService,Service<Appointment> {
+public class AppointmentServiceImp implements AppointmentService {
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 	@Override

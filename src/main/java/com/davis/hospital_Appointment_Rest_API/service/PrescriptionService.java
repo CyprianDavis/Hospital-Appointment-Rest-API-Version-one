@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.service;
 
 import java.util.List;
+
 import com.davis.hospital_Appointment_Rest_API.model.Prescription;
 
 /**
@@ -13,7 +14,7 @@ import com.davis.hospital_Appointment_Rest_API.model.Prescription;
  * @see Service
  * @see Prescription
  */
-public interface PrescriptionService extends Service<String> {
+public interface PrescriptionService extends Service<Prescription> {
 
     /**
      * Searches for prescriptions associated with a specific patient.

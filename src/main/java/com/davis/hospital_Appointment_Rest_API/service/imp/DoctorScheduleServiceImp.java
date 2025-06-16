@@ -9,12 +9,11 @@ import org.springframework.data.domain.Page;
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.repository.DoctorScheduleRepository;
 import com.davis.hospital_Appointment_Rest_API.service.DoctorScheduleService;
-import com.davis.hospital_Appointment_Rest_API.service.Service;
 /**
  * @author CYPRIAN DAVIS
  */
 
-public class DoctorScheduleServiceImp  implements DoctorScheduleService,Service<DoctorSchedule>{
+public class DoctorScheduleServiceImp  implements DoctorScheduleService{
 	@Autowired
 	private DoctorScheduleRepository doctorScheduleRepository;
 	@Override
