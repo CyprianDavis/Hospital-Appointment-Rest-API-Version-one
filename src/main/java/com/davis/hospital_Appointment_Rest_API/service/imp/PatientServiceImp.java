@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.service.imp;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,10 @@ public class PatientServiceImp implements PatientService{
 	public List<Patient> searchByName(String name) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public Optional<Patient> findById(String id){
+		return patientRepository.findById(id);
+		
 	}
 
 }

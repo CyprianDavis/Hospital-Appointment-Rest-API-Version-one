@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.davis.hospital_Appointment_Rest_API.model.Role;
 import com.davis.hospital_Appointment_Rest_API.service.imp.RoleServiceImp;
 
-@RestController
+@RestController("/userRole")
 public class RolesController {
 	@Autowired
 	private RoleServiceImp roleServiceImp;

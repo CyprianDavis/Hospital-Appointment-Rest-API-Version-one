@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.davis.hospital_Appointment_Rest_API.model.Authority;
 import com.davis.hospital_Appointment_Rest_API.service.imp.AuthorityServieImp;
 
-@RestController
+@RestController("/userAuthority")
 public class AuthorityController {
 	
 	@Autowired
 	private AuthorityServieImp authorityServieImp;
 
 	
-	@GetMapping("/authorities")
+	@GetMapping("/authority")
 	public List<Authority> getAuthorities(){
 		return authorityServieImp.findAll();
 	} 

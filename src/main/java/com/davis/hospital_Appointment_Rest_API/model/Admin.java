@@ -60,6 +60,8 @@ public class Admin extends User {
      */
     private String accessLevel;
     
+
+    
     /**
      * Constructs a new Admin entity with Class Table Inheritance.
      * 

@@ -2,6 +2,7 @@ package com.davis.hospital_Appointment_Rest_API.service.imp;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,16 +33,23 @@ public class DoctorServiceImp implements DoctorService{
 	@Override
 	public List<Doctor> searchBySpecialization(String specialization) {
 		// TODO Auto-generated method stub
-		return doctorRepository.findBySpecialization(specialization);
+		return doctorRepository.searchByName(specialization);
 	}
 
 	@Override
 	public List<Doctor> searchByNames(String names) {
 		// TODO Auto-generated method stub
-		
-		
-		
-		return null;
+		return doctorRepository.searchByName(names);
 	}
+	public Optional<Doctor> findById(String id) {
+		return doctorRepository.findById(id);
+		
+	}
+
+	
+
+
+
+	
 
 }

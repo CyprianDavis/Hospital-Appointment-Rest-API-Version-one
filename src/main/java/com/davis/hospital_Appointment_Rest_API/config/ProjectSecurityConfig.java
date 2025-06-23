@@ -11,23 +11,24 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class ProjectSecurityConfig {
-	@Bean
-	SecurityFilterChain deSecurityFilterChain(HttpSecurity http) throws Exception{
-		http.csrf(csrfConfig -> csrfConfig.disable())
-		.authorizeHttpRequests((requests)-> requests
-				.requestMatchers("/signUp").permitAll()
-				);
-				
-		http.formLogin(withDefaults());
-		http.httpBasic(withDefaults());
-		return http.build();
-		
-	}
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-		
-	}
 
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable()) // Disable CSRF for REST APIs
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/users/register","/error").permitAll()  // Allow public registration
+                .anyRequest().authenticated()                        // Secure everything else
+            )
+            .httpBasic(withDefaults()); // Basic auth for simplicity (for now)
+
+        // Comment this out if you're building a pure API with no form login
+        // http.formLogin(withDefaults());
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 }
