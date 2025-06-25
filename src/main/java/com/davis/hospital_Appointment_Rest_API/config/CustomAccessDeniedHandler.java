@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *   <li>Differentiates between authentication and authorization failures</li>
  * </ul>
  * 
- * @author Davis Hospital Development Team
+ * @author CYPRIAN DAVIS
  * @version 1.0
  * @since 2025-06-20
  * @see AccessDeniedHandler
