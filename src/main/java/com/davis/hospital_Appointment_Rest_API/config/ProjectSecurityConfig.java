@@ -16,7 +16,7 @@ public class ProjectSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Disable CSRF for REST APIs
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/register","/error").permitAll()  // Allow public registration
+                .requestMatchers("/api/users/register","/error","/api/userRoles/role").permitAll()  // Allow public registration
                 .anyRequest().authenticated()                        // Secure everything else
             )
             .httpBasic(withDefaults()); // Basic auth for simplicity (for now)
