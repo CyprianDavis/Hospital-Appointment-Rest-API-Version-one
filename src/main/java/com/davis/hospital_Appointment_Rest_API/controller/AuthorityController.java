@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.davis.hospital_Appointment_Rest_API.model.Authority;
@@ -20,7 +21,8 @@ import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
  * 
  * @author CYPRIAN DAVIS
  */
-@RestController("/userAuthorities")
+@RestController
+@RequestMapping("/api/userAuthorities")
 public class AuthorityController {
     
     private final AuthorityServieImp authorityServieImp;
