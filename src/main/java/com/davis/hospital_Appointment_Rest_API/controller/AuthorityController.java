@@ -13,18 +13,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.davis.hospital_Appointment_Rest_API.model.Authority;
 import com.davis.hospital_Appointment_Rest_API.service.imp.AuthorityServieImp;
+import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 
-@RestController("/userAuthority")
+@RestController("/userAuthorities")
 public class AuthorityController {
 	
-	@Autowired
-	private AuthorityServieImp authorityServieImp;
-
+	private final AuthorityServieImp authorityServieImp;
 	
-	@GetMapping("/authority")
-	public List<Authority> getAuthorities(){
-		return authorityServieImp.findAll();
-	} 
+	public AuthorityController(AuthorityServieImp authorityServieImp) {
+		this.authorityServieImp = authorityServieImp;
+	}
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<Authority>>> getAuthorities(){
+		try {
+			List<Authority>authorities = authorityServieImp.findAll();
+			String message = authorities.isEmpty() ?
+					"No Authorities found" :
+						"Authorities retrieved Successfully";
+			return ResponseEntity.ok(ApiResponse.success(message,authorities));
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to retrieve User Roles: "+e.getMessage()));
+		}
+	}
+	
+	
 	@PostMapping
 	public ResponseEntity<String> addAuthority(@RequestBody Authority authority){
 		try {
