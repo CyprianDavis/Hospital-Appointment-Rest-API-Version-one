@@ -2,7 +2,6 @@ package com.davis.hospital_Appointment_Rest_API.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,26 +38,40 @@ public class AuthorityController {
 	
 	
 	@PostMapping
-	public ResponseEntity<String> addAuthority(@RequestBody Authority authority){
+	public ResponseEntity<?> addAuthority(@RequestBody Authority authority){
 		try {
-			if(authority.equals(authorityServieImp.save(authority))) {
-				return ResponseEntity.status(HttpStatus.CREATED).
-						body("Operation Successful");
+			Authority savedAuthority = authorityServieImp.save(authority);
+			if(savedAuthority != null) {
+				 // Success case - return 201 Created with success message
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(new ApiResponse<>(true, "Authority registered successfully", savedAuthority));
+			}else {
+				 // Failure case - return 400 Bad Request
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse<>(false, "Role registration failed"));
 			}
+			}catch(Exception e) {
+				 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		                    .body(new ApiResponse<>(false, "Error: " + e.getMessage()));
+			}
+		}
+	
 		
-		else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).
-					body("Authority registration failed");
+	@GetMapping("/authority/{name}")
+	public ResponseEntity<ApiResponse<Authority>> getByName(@PathVariable("name") String name) {
+		try {
+			Authority authority = authorityServieImp.findByName(name);
+			if(authority != null) {
+                return ResponseEntity.ok(ApiResponse.success("Authority found", authority));
+			}else {
+				 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                        .body(ApiResponse.error("Authority with name '" + name + "' not found"));
+			}
+			
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Error searching for role: " + e.getMessage()));
 		}
-	}catch (Exception e) {
-		// TODO: handle exception
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body("An exception occurred: "+e.getMessage());
-	}
-		}
-	@GetMapping("/name")
-	public Authority getByName(@PathVariable("name") String name) {
-		return authorityServieImp.findByName(name);
 		
 	}
 	
