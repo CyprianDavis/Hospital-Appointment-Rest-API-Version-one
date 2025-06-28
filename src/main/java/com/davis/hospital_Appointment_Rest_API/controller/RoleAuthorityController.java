@@ -85,7 +85,7 @@ public class RoleAuthorityController {
             roleAuthority.setAuthority(authority.get());
 
             RoleAuthority savedRoleAuthority = roleAuthorityServiceImp.addRoleAuthority(roleAuthority);
-
+           
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new ApiResponse<>(true, "Successfully assigned authority to role", savedRoleAuthority));
 
