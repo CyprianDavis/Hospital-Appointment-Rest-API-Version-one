@@ -85,9 +85,14 @@ public class RoleAuthorityController {
             roleAuthority.setAuthority(authority.get());
 
             RoleAuthority savedRoleAuthority = roleAuthorityServiceImp.addRoleAuthority(roleAuthority);
-           
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ApiResponse<>(true, "Successfully assigned authority to role", savedRoleAuthority));
+           if(savedRoleAuthority != null) {
+        	   return ResponseEntity.status(HttpStatus.CREATED)
+                       .body(new ApiResponse<>(true, "Successfully assigned authority to role", savedRoleAuthority));
+           }
+           else{
+        	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+   	                .body(new ApiResponse<>(false, "Failed to assign authority to role"));
+           }
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
