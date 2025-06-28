@@ -1,7 +1,11 @@
 package com.davis.hospital_Appointment_Rest_API.service.imp;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,9 +81,27 @@ public class DoctorServiceImp implements DoctorService {
      */
     @Override
     public List<Doctor> searchByNames(String names) {
-        return doctorRepository.searchByName(names);
-    }
+        if (names == null || names.trim().isEmpty()) {
+            throw new IllegalArgumentException("Names parameter cannot be null or empty");
+        }
 
+        String[] terms = names.trim().split("\\s+");
+        
+        // Get matches for each term in parallel
+        List<List<Doctor>> allMatches = Arrays.stream(terms)
+            .map(doctorRepository::searchByName)
+            .toList();
+        
+        // Find intersection of all result sets
+        return allMatches.stream()
+            .reduce((list1, list2) -> {
+                Set<Doctor> set = new HashSet<>(list2);
+                return list1.stream()
+                    .filter(set::contains)
+                    .toList();
+            })
+            .orElse(Collections.emptyList());
+    }
     /**
      * Finds a doctor by their unique identifier.
      *
