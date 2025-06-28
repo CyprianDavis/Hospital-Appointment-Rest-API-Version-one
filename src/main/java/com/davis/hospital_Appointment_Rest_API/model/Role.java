@@ -3,15 +3,13 @@ package com.davis.hospital_Appointment_Rest_API.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
@@ -44,17 +42,14 @@ public class Role {
     @Column(name = "description", length = 200)
     private String description;
 
-
     /**
-     * Authorities/permissions granted by this role
+     * The authorities associated with this role.
+     * Mapped by the 'role' field in the RoleAuthority entity.
      */
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "RoleAuthority",
-        joinColumns = @JoinColumn(name = "roleId"),
-        inverseJoinColumns = @JoinColumn(name = "authorityId")
-    )
-    private Set<Authority> authorities = new HashSet<>();
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RoleAuthority> authorities = new HashSet<>();
+    
+   
 
     /**
      * Default constructor
@@ -120,19 +115,19 @@ public class Role {
         this.description = description;
     }
 
-    /**
-     * Gets the authorities granted by this role
-     * @return Set of authorities
-     */
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
+	/**
+	 * @return the authorities
+	 */
+	public Set<RoleAuthority> getAuthorities() {
+		return authorities;
+	}
 
-    /**
-     * Sets the authorities granted by this role
-     * @param authorities The set of authorities to grant
-     */
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
+	/**
+	 * @param authorities the authorities to set
+	 */
+	public void setAuthorities(Set<RoleAuthority> authorities) {
+		this.authorities = authorities;
+	}
+
+   
 }

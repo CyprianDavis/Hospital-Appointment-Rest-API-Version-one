@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.davis.hospital_Appointment_Rest_API.model.Authority;
-import com.davis.hospital_Appointment_Rest_API.service.imp.AuthorityServieImp;
+import com.davis.hospital_Appointment_Rest_API.service.imp.AuthorityServiceImp;
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 
 /**
@@ -25,14 +25,14 @@ import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 @RequestMapping("/api/userAuthorities")
 public class AuthorityController {
     
-    private final AuthorityServieImp authorityServieImp;
+    private final AuthorityServiceImp authorityServieImp;
     
     /**
      * Constructs an AuthorityController with the required service implementation.
      * 
      * @param authorityServieImp The service implementation for authority operations
      */
-    public AuthorityController(AuthorityServieImp authorityServieImp) {
+    public AuthorityController(AuthorityServiceImp authorityServieImp) {
         this.authorityServieImp = authorityServieImp;
     }
     
