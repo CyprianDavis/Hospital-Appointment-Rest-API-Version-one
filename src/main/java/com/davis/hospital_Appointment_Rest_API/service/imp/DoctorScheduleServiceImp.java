@@ -1,7 +1,11 @@
 package com.davis.hospital_Appointment_Rest_API.service.imp;
 
 import java.awt.print.Pageable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +49,23 @@ public class DoctorScheduleServiceImp  implements DoctorScheduleService{
 	@Override
 	public List<DoctorSchedule> searchByDoctorName(String name) {
 		// TODO Auto-generated method stub
-		return null;
+		if(name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name parameter cannot be null or empty");
+		}
+		String[] terms = name.trim().split("\\s+");
+		
+		List<List<DoctorSchedule>> allMatches = Arrays.stream(terms)
+				.map(doctorScheduleRepository::searchByDoctorName)
+				.toList();
+		// Find intersection of all result sets
+        return allMatches.stream()
+            .reduce((list1, list2) -> {
+                Set<DoctorSchedule> set = new HashSet<>(list2);
+                return list1.stream()
+                    .filter(set::contains)
+                    .toList();
+            })
+            .orElse(Collections.emptyList());
 	}
 
 	@Override

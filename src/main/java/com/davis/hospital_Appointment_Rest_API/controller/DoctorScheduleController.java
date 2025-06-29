@@ -2,7 +2,6 @@ package com.davis.hospital_Appointment_Rest_API.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,41 +9,81 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorScheduleServiceImp;
-
-@RequestMapping("/doctorSchedule")
+import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
+@RestController
+@RequestMapping("/api/doctorSchedule")
 public class DoctorScheduleController {
-	@Autowired
-	private DoctorScheduleServiceImp doctorScheduleServiceImp;
-	@PostMapping("/schedule")
-	public ResponseEntity<String> addSchedule(@RequestBody DoctorSchedule doctorSchedule){
+	
+	private final DoctorScheduleServiceImp doctorScheduleServiceImp;
+	
+	public DoctorScheduleController(DoctorScheduleServiceImp doctorScheduleServiceImp) {
+		this.doctorScheduleServiceImp = doctorScheduleServiceImp;
+	}
+	@PostMapping
+	public ResponseEntity<?> addSchedule(@RequestBody DoctorSchedule doctorSchedule){
 		try {
-			if(doctorSchedule.equals(doctorScheduleServiceImp.save(doctorSchedule))) {
-				return ResponseEntity.status(HttpStatus.CREATED)
-						.body("Operation Successful");
+			DoctorSchedule savedDoctorSchedule = doctorScheduleServiceImp.save(doctorSchedule);
+			
+			if(savedDoctorSchedule !=null) {
+				 return ResponseEntity.status(HttpStatus.CREATED)
+	                        .body(new ApiResponse<>(true, "Schedule registered successfully", savedDoctorSchedule));
 			}else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body("Operation Failed");
+				 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                        .body(new ApiResponse<>(false, "Schedule registration failed"));
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("An exception occurred: "+e.getMessage());
+			// Exception case - return 500 Internal Server Error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Error: " + e.getMessage()));
 		}
 	}
-	@GetMapping("/schedule")
-	public List<DoctorSchedule> getDoctorSchedules(){
-		return doctorScheduleServiceImp.findAll();
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<DoctorSchedule>>>  getDoctorSchedules(){
+		try {
+			List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.findAll();
+			 String message = doctorSchedules.isEmpty() ?
+	                    "No Schedules found" :
+	                        "Schedules retrieved successfully";
+	            return ResponseEntity.ok(ApiResponse.success(message,doctorSchedules));
+	           
+		}catch (Exception e) {
+			// TODO: handle exception
+			 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(ApiResponse.error("Failed to retrieve User Roles: "+e.getMessage()));    
+			
+		}
+		
 	}
-	@GetMapping("/specialization")
-	public List<DoctorSchedule> getDoctorSchedulesBySpecialization(@PathVariable("specialization")String specialization){
-		return doctorScheduleServiceImp.findByDoctorSpecialization(specialization);	
+		
+	@GetMapping("/{specialization}")
+	public ResponseEntity<ApiResponse<List<DoctorSchedule>>> getDoctorSchedulesBySpecialization(@PathVariable String specialization){
+		try {
+			List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.findByDoctorSpecialization(specialization);
+			String message = doctorSchedules.isEmpty() ?
+                    "No Schedules found" :
+                        "Schedules retrieved successfully";
+            return ResponseEntity.ok(ApiResponse.success(message,doctorSchedules));
+			
+			// TODO: handle exception
+		}catch (Exception e) {
+			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to retrieve User Roles: "+e.getMessage()));    
+		}
+		
 	}
-	@GetMapping("/name")
-	public List<DoctorSchedule> getByDoctorName(@PathVariable("name")String name){
-		return doctorScheduleServiceImp.searchByDoctorName(name);
+	@GetMapping("/{name}")
+	public List<DoctorSchedule> getByDoctorName(@PathVariable String name){
+		try {
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	@GetMapping("/dayOfWeek")
 	public List<DoctorSchedule> getByDayOfWeek(@PathVariable("day")String day){

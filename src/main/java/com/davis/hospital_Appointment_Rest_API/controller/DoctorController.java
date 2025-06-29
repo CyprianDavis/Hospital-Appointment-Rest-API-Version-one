@@ -63,7 +63,7 @@ public class DoctorController {
      *         - ApiResponse with empty list and "No doctors found" message (HTTP 200 OK), or
      *         - ApiResponse with error message (HTTP 500 Internal Server Error)
      */
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ApiResponse<List<Doctor>>> findAll() {
         try {
             List<Doctor> doctors = doctorServiceImp.findAll();

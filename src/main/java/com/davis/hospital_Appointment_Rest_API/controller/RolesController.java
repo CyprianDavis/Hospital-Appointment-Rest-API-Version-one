@@ -92,7 +92,7 @@ public class RolesController {
      * @return ResponseEntity containing the found role or error message
      */
     @GetMapping("/role/{name}")
-    public ResponseEntity<ApiResponse<Role>> getByName(@PathVariable("name") String name) {
+    public ResponseEntity<ApiResponse<Role>> getByName(@PathVariable String name) {
         try {
             // Attempt to find the role by name
             Role role = roleServiceImp.findByName(name);
