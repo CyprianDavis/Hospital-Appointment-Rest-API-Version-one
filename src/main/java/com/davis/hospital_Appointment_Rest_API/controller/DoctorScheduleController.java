@@ -78,16 +78,35 @@ public class DoctorScheduleController {
 		
 	}
 	@GetMapping("/{name}")
-	public List<DoctorSchedule> getByDoctorName(@PathVariable String name){
+	public ResponseEntity<ApiResponse<List<DoctorSchedule>>> getByDoctorName(@PathVariable String name){
 		try {
+			List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.findByDoctorSpecialization(name);
+			String message = doctorSchedules.isEmpty() ?
+                    "No Schedules found" :
+                        "Schedules retrieved successfully";
+            return ResponseEntity.ok(ApiResponse.success(message,doctorSchedules));
 			
 		}catch (Exception e) {
 			// TODO: handle exception
+						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			                    .body(ApiResponse.error("Failed to retrieve User Roles: "+e.getMessage()));  
 		}
 	}
-	@GetMapping("/dayOfWeek")
-	public List<DoctorSchedule> getByDayOfWeek(@PathVariable("day")String day){
-		return doctorScheduleServiceImp.findByDayOfWeek(day);
+	@GetMapping("/{dayOfWeek}")
+	public ResponseEntity<ApiResponse<List<DoctorSchedule>>> getByDayOfWeek(@PathVariable String day){
+		try {
+			List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.findByDayOfWeek(day);
+			String message = doctorSchedules.isEmpty() ?
+                    "No Schedules found" :
+                        "Schedules retrieved successfully";
+            return ResponseEntity.ok(ApiResponse.success(message,doctorSchedules));
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to retrieve User Roles: "+e.getMessage()));  
+		}
+		
 		
 	}
 	
