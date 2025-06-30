@@ -106,6 +106,7 @@ public class Prescription {
 		this.createdOn = createdOn;
 		this.modifiedDate = modifiedDate;
 	}
+	public Prescription() {}
 	/**
 	 * @return the prescriptionId
 	 */

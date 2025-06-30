@@ -3,6 +3,8 @@ package com.davis.hospital_Appointment_Rest_API.utils;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * A generic standardized response format for all API endpoints.
  * @param <T> The type of data payload this response carries
@@ -10,6 +12,7 @@ import java.util.Map;
 public class ApiResponse<T> {
     private boolean success;
     private String message;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;
     private T data;
     private Map<String, String> errors;

@@ -84,6 +84,7 @@ public class Department {
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
     }
+    public Department() { }
     
     /**
      * Gets the unique department identifier

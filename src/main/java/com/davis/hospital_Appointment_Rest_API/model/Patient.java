@@ -152,6 +152,7 @@ public class Patient extends User {
         this.bloodGroup = bloodGroup;
     }
 
+    public Patient() {}
     /**
      * Gets the patient's surname/family name
      * @return The surname

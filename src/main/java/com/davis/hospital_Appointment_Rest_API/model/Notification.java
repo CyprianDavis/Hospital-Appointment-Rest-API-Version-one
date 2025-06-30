@@ -79,6 +79,7 @@ public class Notification {
 		this.messageType = messageType;
 		this.createdOn = createdOn;
 	}
+	public Notification() {}
 	/**
 	 * @return the id
 	 */

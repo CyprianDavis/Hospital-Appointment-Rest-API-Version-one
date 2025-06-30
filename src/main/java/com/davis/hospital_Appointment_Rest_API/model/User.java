@@ -1,10 +1,25 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 /**
  * Abstract base class representing a user in the Hospital Appointment System.
  * <p>
@@ -36,6 +51,7 @@ public abstract class User {
     private String userName;
     
     /** Encrypted password (should be hashed in production) */
+   // @JsonIgnore
     private String passWord;
     
     /** Contact phone number in international format (e.g., +256...) */
@@ -45,17 +61,22 @@ public abstract class User {
     private String email;
     /**Role assigned to this user for authorization and access control.*/
     @OneToOne
+    @JoinColumn(name = "roleId")
     private Role role;
     
     
     /** District/Locality of the user's address */
+    
+   // @JsonIgnore
     private String district;
     
     /** Street address component */
+   // @JsonIgnore
     private String street;
     
     /** Postal code for physical mail */
     @Column(name = "postal_code")
+    //@JsonIgnore
     private String postalCode;
     
     /**
@@ -71,10 +92,13 @@ public abstract class User {
      * Only stores the time component (hours, minutes, seconds) of the creation timestamp.
      * </p>
      * 
-     * @see TemporalType#TIME
-     */
-    @Temporal(TemporalType.TIME)
-    private Date createdOn;
+     * @see CreationTimestamp    */
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdOn;
+
+   
+
 
     /**
      * Timestamp recording the most recent update to the user's profile information.
@@ -83,10 +107,10 @@ public abstract class User {
      * Only stores the time component (hours, minutes, seconds) of the update timestamp.
      * </p>
      * 
-     * @see TemporalType#TIME
+     * @see @UpdateTimestamp
      */
-    @Temporal(TemporalType.TIME)
-    private Date updatedOn;
+    @UpdateTimestamp
+    private LocalDateTime updatedOn;
 
     /**
      * Gender identification of the user.
@@ -120,6 +144,7 @@ public abstract class User {
      * 
      * @see Notification
      */
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Notification> notifications = new HashSet<>();
 
@@ -159,13 +184,7 @@ public abstract class User {
      * @see jakarta.persistence.JoinTable
      * @see #roles
      */
-    @ManyToMany
-    @JoinTable(
-        name = "UserAuthority",
-        joinColumns = @JoinColumn(name = "userId"),
-        inverseJoinColumns = @JoinColumn(name = "authorityId")
-    )
-    private Set<Authority> authorities;
+   
     /**
      * Constructs a new User with basic information.
      * 
@@ -184,6 +203,9 @@ public abstract class User {
         this.district = district;
         this.street = street;
         this.postalCode = postalCode;
+    }
+    public User() {
+    	
     }
 
     /**
@@ -319,7 +341,7 @@ public abstract class User {
      * Gets the account creation timestamp
      * @return Date when user was created
      */
-    public Date getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
@@ -327,7 +349,7 @@ public abstract class User {
      * Sets the account creation timestamp
      * @param createdOn Creation date (typically auto-set)
      */
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
 
@@ -335,7 +357,7 @@ public abstract class User {
      * Gets the last update timestamp
      * @return Date of last profile update
      */
-    public Date getLastUpdated() {
+    public LocalDateTime getLastUpdated() {
         return updatedOn;
     }
 
@@ -343,7 +365,7 @@ public abstract class User {
      * Sets the last update timestamp
      * @param lastUpdated Date of last update
      */
-    public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(LocalDateTime lastUpdated) {
         this.updatedOn = lastUpdated;
     }
 
@@ -403,20 +425,4 @@ public abstract class User {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	/**
-	 * @return the authorities
-	 */
-	public Set<Authority> getAuthorities() {
-		return authorities;
-	}
-
-	/**
-	 * @param authorities the authorities to set
-	 */
-	public void setAuthorities(Set<Authority> authorities) {
-		this.authorities = authorities;
-	}
-	
-    
 }

@@ -77,6 +77,9 @@ public class Billing {
 		this.invoiceDate = invoiceDate;
 		this.dueDate = dueDate;
 	}
+	public  Billing() {
+		
+	}
 	/**
 	 * @return the id
 	 */

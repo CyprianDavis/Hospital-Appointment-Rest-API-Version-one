@@ -98,6 +98,7 @@ public class MedicalRecord {
 		this.note = note;
 		this.recordDate = recordDate;
 	}
+	public MedicalRecord() {}
 	/**
 	 * @return the id
 	 */

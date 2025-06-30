@@ -109,6 +109,7 @@ public class DoctorSchedule {
         this.endTime = endTime;
         this.maximumAppointments = maximumAppointments;
     }
+    public DoctorSchedule() {}
 
     /**
      * Gets the unique identifier of this schedule entry.

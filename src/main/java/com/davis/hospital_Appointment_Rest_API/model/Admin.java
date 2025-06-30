@@ -53,14 +53,7 @@ public class Admin extends User {
      */
     private String otherName;
     
-    /** 
-     * Privilege level (e.g., "SUPER_ADMIN", "DEPARTMENT_ADMIN") 
-     * @see #getAccessLevel()
-     * @see #setAccessLevel(String)
-     */
-    private String accessLevel;
     
-
     
     /**
      * Constructs a new Admin entity with Class Table Inheritance.
@@ -86,9 +79,11 @@ public class Admin extends User {
         this.surName = surName;
         this.givenName = givenName;
         this.otherName = otherName;
-        this.accessLevel = accessLevel;
+       
     }
-
+    public Admin() {
+    	
+    }
     /**
      * Gets the administrator's surname/family name
      * @return The surname
@@ -138,19 +133,5 @@ public class Admin extends User {
         this.otherName = otherName;
     }
 
-    /**
-     * Gets the administrator's access privilege level
-     * @return The access level (e.g., "SUPER_ADMIN")
-     */
-    public String getAccessLevel() {
-        return accessLevel;
-    }
-
-    /**
-     * Sets the administrator's access privilege level
-     */
-    public void setAccessLevel(String accessLevel) {
-       
-        this.accessLevel = accessLevel;
-    }
+   
 }

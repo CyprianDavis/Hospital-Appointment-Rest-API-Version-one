@@ -138,6 +138,7 @@ public class Doctor extends User {
                  String street, String postalCode) {
         super(userName, passWord, contact, district, street, postalCode);
     }
+    public Doctor() {}
 
     /**
      * Gets the doctor's surname.

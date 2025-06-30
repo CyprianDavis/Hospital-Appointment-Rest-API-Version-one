@@ -118,7 +118,7 @@ public class DoctorScheduleController {
     public ResponseEntity<ApiResponse<List<DoctorSchedule>>> getByDoctorName(
             @PathVariable String name) {
         try {
-            List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.findByDoctorName(name);
+            List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.searchByDoctorName(name);
             String message = doctorSchedules.isEmpty() ?
                     "No schedules found for doctor: " + name :
                     "Schedules retrieved successfully";

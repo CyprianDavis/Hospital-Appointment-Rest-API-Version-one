@@ -2,9 +2,8 @@ package com.davis.hospital_Appointment_Rest_API.service.imp;
 
 import java.time.LocalDateTime;
 import java.time.Year;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,7 +57,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
             new SimpleGrantedAuthority(user.getRole().getName()));
         
         return new org.springframework.security.core.userdetails.User(
-            username, username, authorities);
+            user.getUserName(), user.getPassWord(), authorities);
     }
 
     /**
@@ -127,7 +126,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
         //Set creation date and Status
         
         LocalDateTime now = LocalDateTime.now();
-        user.setCreatedOn(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+        user.setCreatedOn(now);
         user.setStatus("ACTIVE");
         
         //Hash User password

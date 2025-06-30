@@ -48,7 +48,7 @@ public class UserController {
      *         - HTTP 400 (Bad Request) if registration fails
      *         - HTTP 500 (Internal Server Error) for exceptions
      */
-    @PreAuthorize("hasRole('ADMIN')")  // Ensures only ADMINs can access this endpoint
+   @PreAuthorize("hasRole('ADMIN')")  // Ensures only ADMINs can access this endpoint
     @PostMapping("/admin/register")
     public ResponseEntity<?> registerAdmin(@RequestBody Admin user) {
         return handleUserRegistration(user, "Admin");
@@ -100,6 +100,8 @@ public class UserController {
             
             if (savedUser != null) {
                 // Success case - return 201 Created with success message
+            		
+            	
                 return ResponseEntity.status(HttpStatus.CREATED)
                         .body(new ApiResponse<>(true, userType + " registered successfully", savedUser));
             } else {

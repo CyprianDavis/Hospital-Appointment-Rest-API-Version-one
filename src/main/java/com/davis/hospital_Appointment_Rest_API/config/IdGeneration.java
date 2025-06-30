@@ -17,7 +17,7 @@ public class IdGeneration {
 		long currentValue = 0;
 		try {
 			// SQL query to get the current value for the sequence
-			String selectSql = "SELECT idValue FROM ID_Gen WHERE idName = :idName";
+			String selectSql = "SELECT idValue FROM IDGen WHERE idName = :idName";
 			Query selectQuery = entityManager.createNativeQuery(selectSql);
 			selectQuery.setParameter("idName", idName);
 			currentValue = ((Number) selectQuery.getSingleResult()).intValue();
@@ -26,7 +26,7 @@ public class IdGeneration {
 			long nextValue = currentValue + 1;
 			
 			// SQL query to update the sequence value
-			String updateSql = "UPDATE ID_Gen SET idValue = :nextValue WHERE idName = :idName";
+			String updateSql = "UPDATE IDGen SET idValue = :nextValue WHERE idName = :idName";
 			Query updateQuery = entityManager.createNativeQuery(updateSql);
 			updateQuery.setParameter("nextValue", nextValue);
 			updateQuery.setParameter("idName", idName);
