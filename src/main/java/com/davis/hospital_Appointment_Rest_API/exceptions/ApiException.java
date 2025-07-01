@@ -1,4 +1,4 @@
-package com.davis.hospital_Appointment_Rest_API.utils;
+package com.davis.hospital_Appointment_Rest_API.exceptions;
 
 import org.springframework.http.HttpStatus;
 
@@ -9,11 +9,11 @@ import org.springframework.http.HttpStatus;
  * HTTP status codes and optional error codes for better error handling and reporting.
  * </p>
  * 
- * @author Davis Developer
+ * @author CYPRIAN DAVIS
  * @version 1.0
  * @see RuntimeException
  * @see HttpStatus
- * @since 2023-05-16
+ * @since 2025-07-01
  */
 public class ApiException extends RuntimeException {
     
