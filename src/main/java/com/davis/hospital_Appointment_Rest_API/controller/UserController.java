@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import com.davis.hospital_Appointment_Rest_API.model.Admin;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.model.Patient;
+import com.davis.hospital_Appointment_Rest_API.model.Role;
 import com.davis.hospital_Appointment_Rest_API.model.User;
+import com.davis.hospital_Appointment_Rest_API.service.imp.RoleServiceImp;
 import com.davis.hospital_Appointment_Rest_API.service.imp.UserServiceImp;
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 
@@ -28,14 +30,16 @@ import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 public class UserController {
 
     private final UserServiceImp userServiceImp;
+    private final RoleServiceImp roleServiceImp;
 
     /**
      * Constructs a new UserController with required dependencies.
      * 
      * @param userServiceImp The service implementation for user operations
      */
-    public UserController(UserServiceImp userServiceImp) {
+    public UserController(UserServiceImp userServiceImp,RoleServiceImp roleServiceImp) {
         this.userServiceImp = userServiceImp;
+		this.roleServiceImp = roleServiceImp;
     }
 
     /**
@@ -51,6 +55,11 @@ public class UserController {
    @PreAuthorize("hasRole('ADMIN')")  // Ensures only ADMINs can access this endpoint
     @PostMapping("/admin/register")
     public ResponseEntity<?> registerAdmin(@RequestBody Admin user) {
+	   Role role = roleServiceImp.findByName("Admin");
+	   if(role != null) {
+		   user.setRole(role);
+	   }
+	   
         return handleUserRegistration(user, "Admin");
     }
 
@@ -67,6 +76,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")  // Same security restriction as Admin registration
     @PostMapping("/doctor/register")
     public ResponseEntity<?> registerDoctor(@RequestBody Doctor user) {
+    		
         return handleUserRegistration(user, "Doctor");
     }
 
