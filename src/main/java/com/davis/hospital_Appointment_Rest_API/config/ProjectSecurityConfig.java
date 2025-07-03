@@ -64,35 +64,23 @@ public class ProjectSecurityConfig {
         http
             // Configure exception handling for authentication and authorization failures
             .exceptionHandling(exceptionHandling -> exceptionHandling
-                // Custom response for unauthenticated requests
                 .authenticationEntryPoint(authenticationEntryPoint)
-                // Custom response for unauthorized access attempts  
                 .accessDeniedHandler(accessDeniedHandler)
             )
             
             // Configure security context management
             .securityContext(securityContext -> securityContext
-                // Allow SecurityContext to be saved automatically
                 .requireExplicitSave(false)
             )
             
             // Configure session management
             .sessionManagement(session -> session
-                // Create session for every request (consider STATELESS for pure APIs)
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                // For pure REST APIs, consider using STATELESS instead of ALWAYS
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             
-            // Configure CSRF protection
-            .csrf(csrf -> csrf
-                // Custom CSRF token request handler
-                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                // Store CSRF token in cookie with HttpOnly=false for JS access
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                // Uncomment to disable CSRF for pure REST APIs:
-                // .disable()
-            )
-            // Add CSRF cookie filter after basic authentication
-            .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+            // Disable CSRF protection (recommended for stateless REST APIs)
+            .csrf(csrf -> csrf.disable())
             
             // Configure authorization rules
             .authorizeHttpRequests(auth -> auth

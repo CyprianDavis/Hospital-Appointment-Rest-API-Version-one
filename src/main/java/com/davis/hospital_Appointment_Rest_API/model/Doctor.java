@@ -48,8 +48,6 @@ public class Doctor extends User {
     /** The doctor's official medical license number */
     private String license_number;
     
-    /** The standard consultation fee in local currency units */
-    private double consulation_fee;
     
     /** The department where the doctor practices */
     @ManyToOne
@@ -218,22 +216,6 @@ public class Doctor extends User {
      */
     public void setLicense_number(String license_number) {
         this.license_number = license_number;
-    }
-
-    /**
-     * Gets the standard consultation fee.
-     * @return the fee amount in local currency
-     */
-    public double getConsulation_fee() {
-        return consulation_fee;
-    }
-
-    /**
-     * Sets the standard consultation fee.
-     * @param consulation_fee the fee amount to set (must be positive)
-     */
-    public void setConsulation_fee(double consulation_fee) {
-        this.consulation_fee = consulation_fee;
     }
 
     /**

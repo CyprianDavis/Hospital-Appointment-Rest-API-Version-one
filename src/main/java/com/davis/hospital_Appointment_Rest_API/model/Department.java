@@ -1,9 +1,14 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,6 +50,7 @@ public class Department {
     private String description;
     
     /** Physical location code within the hospital (e.g., "BLDG-A-2F") */
+    @Column(name="location_code")
     private String locactionCode;
     
     /** Direct contact number for the department */
@@ -56,10 +62,15 @@ public class Department {
     private Doctor headOfDepart;
     
     /** Timestamp when the department record was created */
-    private Date createdOn;
+    @Column(name=" Created_at",updatable = false)
+    @CreationTimestamp
+    
+    private LocalDateTime createdOn;
     
     /** Timestamp when the department record was last updated */
-    private Date updatedOn;
+    @UpdateTimestamp
+    @Column(name="lastUpdated")
+    private LocalDateTime updatedOn;
     @OneToMany(mappedBy = "department")
     private Set<Doctor>doctors = new HashSet<>();
     
@@ -75,7 +86,7 @@ public class Department {
      * @param updatedOn Last update timestamp
      */
     public Department(String department, String description, String locactionCode, String contact, Doctor headOfDepart,
-            Date createdOn, Date updatedOn) {
+            LocalDateTime createdOn, LocalDateTime updatedOn) {
         this.name = department;
         this.description = description;
         this.locactionCode = locactionCode;
@@ -186,7 +197,7 @@ public class Department {
      * Gets the creation timestamp
      * @return When the department record was created
      */
-    public Date getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
     
@@ -194,7 +205,7 @@ public class Department {
      * Sets the creation timestamp
      * @param createdOn When the department was created
      */
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
     
@@ -202,7 +213,7 @@ public class Department {
      * Gets the last update timestamp
      * @return When the department was last updated
      */
-    public Date getUpdatedOn() {
+    public LocalDateTime getUpdatedOn() {
         return updatedOn;
     }
     
@@ -210,7 +221,7 @@ public class Department {
      * Sets the last update timestamp
      * @param updatedOn When the department was last updated
      */
-    public void setUpdatedOn(Date updatedOn) {
+    public void setUpdatedOn(LocalDateTime updatedOn) {
         this.updatedOn = updatedOn;
     }
 

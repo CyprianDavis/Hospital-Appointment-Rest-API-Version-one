@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.davis.hospital_Appointment_Rest_API.model.Department;
@@ -39,6 +40,7 @@ public class DepartmentController {
      *         - 200 OK with departments if successful
      *         - 500 Internal Server Error if an exception occurs
      */
+   
     @GetMapping
     public ResponseEntity<ApiResponse<List<Department>>> getDepartments() {
         try {
@@ -68,6 +70,7 @@ public class DepartmentController {
      *         - 400 Bad Request if the operation fails
      *         - 500 Internal Server Error if an exception occurs
      */
+    @PreAuthorize("hasRole('ADMIN')")  // Same security restriction as Admin registration
     @PostMapping
     public ResponseEntity<?> addDepartment(@RequestBody Department depart) {
         try {
