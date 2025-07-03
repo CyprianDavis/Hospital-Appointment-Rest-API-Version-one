@@ -9,12 +9,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.davis.hospital_Appointment_Rest_API.config.IdGeneration;
-import com.davis.hospital_Appointment_Rest_API.exceptions.UsernameNotFoundException;
+import com.davis.hospital_Appointment_Rest_API.exceptions.ResourceNotFoundException;
 import com.davis.hospital_Appointment_Rest_API.model.User;
 import com.davis.hospital_Appointment_Rest_API.repository.UserRepository;
 import com.davis.hospital_Appointment_Rest_API.service.UserService;
@@ -51,7 +52,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username)
-            .orElseThrow(() -> new UsernameNotFoundException(
+            .orElseThrow(() -> new ResourceNotFoundException(
                 "User details not found for the user: " + username));
         
         List<GrantedAuthority> authorities = List.of(

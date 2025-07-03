@@ -1,7 +1,8 @@
 package com.davis.hospital_Appointment_Rest_API.config;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,21 +38,33 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          AuthenticationException authException) throws IOException {
         
         String errorMessage;
+        String errorCode = "AUTH_ERROR";
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
         
         if (authException instanceof BadCredentialsException) {
             errorMessage = "Invalid username or password";
+            errorCode = "BAD_CREDENTIALS";
         } else if (authException instanceof InsufficientAuthenticationException) {
-            errorMessage = "Full authentication is required to access this resource";
+            errorMessage = "Authentication required";
+            errorCode = "UNAUTHENTICATED";
         } else {
-            errorMessage = "Authentication failed: " + authException.getMessage();
+            errorMessage = "Authentication failed";
+            errorCode = "AUTH_FAILURE";
         }
         
-        // Create error response using ApiResponse
-        ApiResponse<?> apiResponse = ApiResponse.error(errorMessage);
+        // Create detailed error response
+        Map<String, String> errorDetails = new HashMap<>();
+        errorDetails.put("errorCode", errorCode);
+        errorDetails.put("message", errorMessage);
+        errorDetails.put("path", request.getRequestURI());
         
-        // Configure response
+        ApiResponse<Map<String, String>> apiResponse = ApiResponse.error(
+            "Authentication failed", 
+            errorDetails
+        );
+        
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(status.value());
         response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
     }
 }

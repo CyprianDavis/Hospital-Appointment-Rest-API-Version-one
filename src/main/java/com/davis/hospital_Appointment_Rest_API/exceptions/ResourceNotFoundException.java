@@ -30,19 +30,11 @@ public class ResourceNotFoundException extends ApiException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new ResourceNotFoundException with details about the missing resource.
-     *
-     * @param resourceName the name/type of the resource that wasn't found (e.g., "Patient", "Appointment")
-     * @param fieldName the name of the field that was searched (e.g., "id", "email")
-     * @param fieldValue the value that was searched for (e.g., "123", "patient@example.com")
+     * Constructs a new ResourceNotFoundException with the specified error message.
      * 
+     * @param message the detail message explaining which resource wasn't found
      */
-    public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
-        // Constructs a formatted message and passes to parent ApiException
-        super(
-            String.format("%s not found with %s: %s", resourceName, fieldName, fieldValue), 
-            HttpStatus.NOT_FOUND,
-            "RESOURCE_NOT_FOUND"
-        );
+    public ResourceNotFoundException(String message) {
+        super(message, HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND");
     }
 }

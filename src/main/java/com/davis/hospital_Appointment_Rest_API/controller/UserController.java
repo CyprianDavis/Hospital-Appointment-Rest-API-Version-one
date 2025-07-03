@@ -126,29 +126,16 @@ public class UserController {
         }
     }
 
-    /**
-     * Retrieves all registered users.
-     * <p>Accessible only to authenticated users with ADMIN role.</p>
-     * 
-     * @return ResponseEntity containing:
-     *         - HTTP 200 (OK) with user list if successful
-     *         - HTTP 500 (Internal Server Error) for exceptions
-     */
-    @PreAuthorize("hasRole('ADMIN')")  // Restricted to ADMIN users only
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<User>>> getUsers() {
-        try {
-            List<User> users = userServiceImp.findAll();
+        // If execution reaches here, user is authenticated and authorized
+        List<User> users = userServiceImp.findAll();
+        
+        String message = users.isEmpty() ? 
+            "No users found" : 
+            "Users retrieved successfully";
             
-            // Customize message based on whether users were found
-            String message = users.isEmpty() ? 
-                "No users found" : 
-                "Users retrieved successfully";
-                
-            return ResponseEntity.ok(ApiResponse.success(message, users));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("Failed to retrieve users: " + e.getMessage()));
-        }
+        return ResponseEntity.ok(ApiResponse.success(message, users));
     }
 }

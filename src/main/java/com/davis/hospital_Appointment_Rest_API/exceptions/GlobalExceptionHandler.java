@@ -1,15 +1,18 @@
 package com.davis.hospital_Appointment_Rest_API.exceptions;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 
@@ -23,121 +26,154 @@ import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
  * <p>
  * Handles the following exception types:
  * <ul>
- *   <li>{@link ApiException} - Custom API exceptions</li>
- *   <li>{@link MethodArgumentNotValidException} - Validation failures</li>
- *   <li>{@link Exception} - All other unexpected exceptions</li>
+ *   <li>{@link ApiException} - Base custom API exceptions</li>
+ *   <li>{@link BadRequestException} - Invalid client requests (400)</li>
+ *   <li>{@link ResourceNotFoundException} - Missing resources (404)</li>
+ *   <li>{@link UnauthorizedException} - Authentication failures (401)</li>
+ *   <li>{@link ForbiddenException} - Authorization failures (403)</li>
+ *   <li>{@link MethodArgumentNotValidException} - Validation failures (400)</li>
+ *   <li>Spring Security exceptions - Authentication/Authorization failures</li>
+ *   <li>{@link Exception} - All other unexpected exceptions (500)</li>
  * </ul>
  * </p>
  * 
  * @author CYPRIAN DAVIS
  * @version 1.0
- * @see ControllerAdvice
- * @see ExceptionHandler
  * @since 2025-07-01
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * Handles custom API exceptions.
-     * <p>
-     * Processes exceptions of type {@link ApiException} and converts them
-     * into standardized error responses.
-     * </p>
-     *
-     * @param ex The caught API exception
-     * @return ResponseEntity containing error details in {@link ApiResponse} format
-     * 
-     * @implNote
-     * Creates a response with:
-     * <ul>
-     *   <li>HTTP status from the exception</li>
-     *   <li>Error details including error code and message</li>
-     *   <li>Standardized response format</li>
-     * </ul>
+     * Handles invalid credentials during authentication
+     * @param ex The BadCredentialsException instance
+     * @return ApiResponse with UNAUTHORIZED status (401)
      */
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ApiResponse<Object>> handleApiException(ApiException ex) {
-        // Create map for error details
-        Map<String, String> errorDetails = new HashMap<>();
-        // Add error code from exception
-        errorDetails.put("errorCode", ex.getErrorCode());
-        // Add exception message
-        errorDetails.put("message", ex.getMessage());
-        
-        // Create error response using ApiResponse utility
-        ApiResponse<Object> response = ApiResponse.error(
-            ex.getStatus().getReasonPhrase(),
-            errorDetails
-        );
-        
-        // Return response with appropriate HTTP status
-        return new ResponseEntity<>(response, ex.getStatus());
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentialsException(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.error("Invalid username or password"));
     }
 
     /**
-     * Handles validation exceptions.
-     * <p>
-     * Processes Spring's {@link MethodArgumentNotValidException} that occurs
-     * when request body validation fails.
-     * </p>
-     *
-     * @param ex The caught validation exception
-     * @return ResponseEntity containing validation errors in {@link ApiResponse} format
-     * 
-     * @implNote
-     * Extracts field errors and converts them to a map where:
-     * <ul>
-     *   <li>Key is the field name</li>
-     *   <li>Value is the validation error message</li>
-     * </ul>
+     * Handles cases where authentication is insufficient
+     * @param ex The InsufficientAuthenticationException instance
+     * @return ApiResponse with UNAUTHORIZED status (401)
+     */
+    @ExceptionHandler(InsufficientAuthenticationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInsufficientAuthenticationException(
+            InsufficientAuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.error("Authentication required. Please provide valid credentials"));
+    }
+
+    /**
+     * Handles authorization failures when access is denied
+     * @param ex The AuthorizationDeniedException instance
+     * @return ApiResponse with FORBIDDEN status (403)
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AuthorizationDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.error("You don't have permission to access this resource"));
+    }
+
+    /**
+     * Handles general authentication failures
+     * @param ex The AuthenticationException instance
+     * @return ApiResponse with UNAUTHORIZED status (401)
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.error("Authentication failed: " + ex.getMessage()));
+    }
+
+    /**
+     * Handles validation failures for method arguments
+     * @param ex The MethodArgumentNotValidException instance
+     * @return ApiResponse with BAD_REQUEST status (400) including field errors
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        
-        // Convert field errors to map of field names to error messages
+    public ResponseEntity<ApiResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(
-                        // Key mapper - field name
                         FieldError::getField,
-                        // Value mapper - error message or default
-                        fieldError -> fieldError.getDefaultMessage() == null ? 
-                                "Validation error" : fieldError.getDefaultMessage()
-                ));
-        
-        // Create error response with validation errors
-        ApiResponse<Map<String, String>> response = 
-                ApiResponse.error("Validation failed", errors);
-        
-        // Return bad request response with validation errors
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                        fieldError -> fieldError.getDefaultMessage() != null ? 
+                                fieldError.getDefaultMessage() : "Validation error"));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error("Validation failed", errors));
     }
 
     /**
-     * Handles all other unexpected exceptions.
-     * <p>
-     * Acts as a fallback handler for any exception not specifically handled.
-     * </p>
-     *
-     * @param ex The caught exception
-     * @return ResponseEntity with generic error message
-     * 
-     * @implNote
-     * Returns:
-     * <ul>
-     *   <li>HTTP 500 status code</li>
-     *   <li>Generic error message</li>
-     *   <li>No technical details exposed</li>
-     * </ul>
+     * Handles custom API exceptions
+     * @param ex The ApiException instance
+     * @return ApiResponse with the specified status code from the exception
+     */
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiResponse<Void>> handleApiException(ApiException ex) {
+        return ResponseEntity.status(ex.getStatus())
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
+    /**
+     * Handles malformed or invalid client requests
+     * @param ex The BadRequestException instance
+     * @return ApiResponse with BAD_REQUEST status (400)
+     */
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadRequestException(BadRequestException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
+    /**
+     * Handles requests for non-existent resources
+     * @param ex The ResourceNotFoundException instance
+     * @return ApiResponse with NOT_FOUND status (404)
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
+    /**
+     * Handles unauthorized access attempts
+     * @param ex The UnauthorizedException instance
+     * @return ApiResponse with UNAUTHORIZED status (401)
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUnauthorizedException(UnauthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
+    /**
+     * Handles forbidden access attempts
+     * @param ex The ForbiddenException instance
+     * @return ApiResponse with FORBIDDEN status (403)
+     */
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponse<Void>> handleForbiddenException(ForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
+    /**
+     * Fallback handler for all other uncaught exceptions
+     * @param ex The Exception instance
+     * @return ApiResponse with INTERNAL_SERVER_ERROR status (500)
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
-        // Create generic error response
-        ApiResponse<Void> response = ApiResponse.error("An unexpected error occurred");
-        // Return internal server error response
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
+        // Log the full exception for debugging
+        ex.printStackTrace();
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("An unexpected error occurred: " + ex.getMessage()));
     }
 }
