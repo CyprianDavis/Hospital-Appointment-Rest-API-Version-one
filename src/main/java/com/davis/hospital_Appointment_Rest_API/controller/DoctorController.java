@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctor;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorServiceImp;
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
@@ -64,9 +65,9 @@ public class DoctorController {
      *         - ApiResponse with error message (HTTP 500 Internal Server Error)
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Doctor>>> findAll() {
+    public ResponseEntity<ApiResponse<List<ViewDoctor>>> findAll() {
         try {
-            List<Doctor> doctors = doctorServiceImp.findAll();
+            List<ViewDoctor> doctors = doctorServiceImp.findAllDoctorsAsViewDoctors();
             String message = doctors.isEmpty() 
                 ? "No doctors found" 
                 : "Doctors retrieved successfully";
@@ -104,7 +105,7 @@ public class DoctorController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse<>(false, "Specialization is required"));
             }
-            List<Doctor> doctors = doctorServiceImp.searchBySpecialization(specialization);
+            List<ViewDoctor> doctors = doctorServiceImp.searchBySpecialization(specialization);
             String message = doctors.isEmpty() 
                 ? "No doctors found with this specialization" 
                 : "Doctors retrieved successfully";
@@ -142,7 +143,7 @@ public class DoctorController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse<>(false, "Doctor's name is required"));
             }
-            List<Doctor> doctors = doctorServiceImp.searchByNames(name);
+            List<ViewDoctor> doctors = doctorServiceImp.searchByNames(name);
             String message = doctors.isEmpty() 
                 ? "No doctors found with this name" 
                 : "Doctors retrieved successfully";

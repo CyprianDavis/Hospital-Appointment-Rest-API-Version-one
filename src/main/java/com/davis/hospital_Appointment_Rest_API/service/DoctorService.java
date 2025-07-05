@@ -37,6 +37,7 @@ import com.davis.hospital_Appointment_Rest_API.model.Doctor;
  * @see Service
  */
 public interface DoctorService extends Service<Doctor> {
+	public  List<ViewDoctor> findAllDoctorsAsViewDoctors();
     
     /**
      * Finds doctors by their medical specialization and returns them as {@link ViewDoctor} DTOs.

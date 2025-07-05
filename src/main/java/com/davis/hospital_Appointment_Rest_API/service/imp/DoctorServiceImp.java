@@ -29,6 +29,7 @@ import com.davis.hospital_Appointment_Rest_API.service.DoctorService;
  *   <li>Implementing search functionality</li>
  *   <li>Converting between entities and DTOs</li>
  *   <li>Enforcing business rules and validation</li>
+ *   <li>Providing both entity and DTO views of doctor data</li>
  * </ul>
  * </p>
  *
@@ -46,10 +47,11 @@ public class DoctorServiceImp implements DoctorService {
     private DoctorRepository doctorRepository;
 
     /**
-     * Retrieves all doctors from the system as entities.
+     * Retrieves all doctors from the system as full entities.
      * <p>
-     * Note: For display purposes, consider using repository methods that return
-     * {@link ViewDoctor} DTOs directly for better performance.
+     * This method returns complete {@link Doctor} entities with all relationships loaded.
+     * For display purposes where only basic information is needed, consider using
+     * {@link #findAllDoctorsAsViewDoctors()} instead for better performance.
      * </p>
      *
      * @return list of all {@link Doctor} entities in the system;
@@ -58,6 +60,23 @@ public class DoctorServiceImp implements DoctorService {
     @Override
     public List<Doctor> findAll() {
         return doctorRepository.findAll();
+    }
+
+    /**
+     * Retrieves all doctors as lightweight {@link ViewDoctor} DTOs.
+     * <p>
+     * This optimized version returns only the fields needed for display purposes,
+     * providing better performance than the entity-based {@link #findAll()} method.
+     * The DTOs contain all essential doctor information without the overhead of
+     * loading full entity relationships.
+     * </p>
+     *
+     * @return list of all {@link ViewDoctor} DTOs in the system;
+     *         empty list if no doctors exist (never null)
+     */
+    @Override
+    public List<ViewDoctor> findAllDoctorsAsViewDoctors() {
+        return doctorRepository.findAllDoctorsAsViewDoctors();
     }
 
     /**
@@ -150,12 +169,9 @@ public class DoctorServiceImp implements DoctorService {
      *        (must not be null or empty)
      * @return {@link Optional} containing the found {@link Doctor} entity,
      *         or empty Optional if not found
-     * @throws IllegalArgumentException if id parameter is null or empty
      */
     public Optional<Doctor> findById(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID parameter cannot be null or empty");
-        }
+       
         return doctorRepository.findById(id);
     }
 }
