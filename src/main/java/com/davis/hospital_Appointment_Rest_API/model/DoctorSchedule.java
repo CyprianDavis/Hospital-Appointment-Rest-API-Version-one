@@ -1,6 +1,11 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -107,7 +112,8 @@ public class DoctorSchedule {
      * Automatically set when the schedule is first persisted.
      * </p>
      */
-    private LocalTime createdOn;
+    @CreationTimestamp
+    private LocalDateTime createdOn;
     
     /**
      * The timestamp when this schedule entry was last modified.
@@ -115,7 +121,8 @@ public class DoctorSchedule {
      * Updated whenever any field in the schedule is changed.
      * </p>
      */
-    private LocalTime lastUpdated;
+    @UpdateTimestamp
+    private LocalDateTime lastUpdated;
 
     /**
      * Constructs a new DoctorSchedule with the specified parameters.
@@ -233,27 +240,6 @@ public class DoctorSchedule {
         this.endTime = endTime;
     }
 
-    /**
-     * Gets the maximum number of appointments allowed.
-     *
-     * @return the maximum appointments (positive integer)
-     * @deprecated Use {@link #getAvailableSlots()} instead
-     */
-    @Deprecated
-    public int getMaximumAppointments() {
-        return availableSlots;
-    }
-
-    /**
-     * Sets the maximum number of appointments allowed.
-     *
-     * @param maximumAppointments the maximum appointments to set (must be positive)
-     * @deprecated Use {@link #setAvailableSlots(int)} instead
-     */
-    @Deprecated
-    public void setMaximumAppointments(int maximumAppointments) {
-        this.availableSlots = maximumAppointments;
-    }
 
     /**
      * Gets the number of available appointment slots.
@@ -271,9 +257,7 @@ public class DoctorSchedule {
      * @throws IllegalArgumentException if availableSlots is negative
      */
     public void setAvailableSlots(int availableSlots) {
-        if (availableSlots < 0) {
-            throw new IllegalArgumentException("Available slots cannot be negative");
-        }
+       
         this.availableSlots = availableSlots;
     }
 
@@ -300,7 +284,7 @@ public class DoctorSchedule {
      *
      * @return the creation timestamp
      */
-    public LocalTime getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
@@ -312,7 +296,7 @@ public class DoctorSchedule {
      *
      * @param createdOn the creation timestamp to set
      */
-    public void setCreatedOn(LocalTime createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
 
@@ -321,7 +305,7 @@ public class DoctorSchedule {
      *
      * @return the last update timestamp
      */
-    public LocalTime getLastUpdated() {
+    public LocalDateTime getLastUpdated() {
         return lastUpdated;
     }
 
@@ -330,7 +314,7 @@ public class DoctorSchedule {
      *
      * @param lastUpdated the update timestamp to set
      */
-    public void setLastUpdated(LocalTime lastUpdated) {
+    public void setLastUpdated(LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 }
