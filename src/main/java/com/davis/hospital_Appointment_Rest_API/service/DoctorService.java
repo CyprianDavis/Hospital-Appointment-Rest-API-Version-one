@@ -2,40 +2,89 @@ package com.davis.hospital_Appointment_Rest_API.service;
 
 import java.util.List;
 
+import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctor;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 
 /**
- * Service interface for handling business logic related to {@link Doctor} entities.
+ * Service interface for doctor-related operations in the Hospital Appointment System.
  * <p>
- * Provides operations for searching doctors by specialization and name components,
- * in addition to generic CRUD operations inherited from the {@code Service} interface.
+ * Provides business logic for doctor management and search operations, returning
+ * {@link ViewDoctor} DTOs optimized for display purposes. This interface extends
+ * the generic {@link Service} interface with doctor-specific functionality.
+ * </p>
+ *
+ * <p><b>Key Features:</b>
+ * <ul>
+ *   <li>Search doctors by medical specialization</li>
+ *   <li>Search doctors by name components</li>
+ *   <li>Returns lightweight {@link ViewDoctor} DTOs instead of full entities</li>
+ *   <li>Inherits standard CRUD operations from {@link Service}</li>
+ * </ul>
+ * </p>
+ *
+ * <p><b>Usage Guidelines:</b>
+ * <ul>
+ *   <li>Use for all doctor-related business logic</li>
+ *   <li>Prefer these methods over direct repository access for business operations</li>
+ *   <li>DTO results are optimized for API responses and UI display</li>
+ * </ul>
  * </p>
  * 
  * @author CYPRIAN DAVIS
+ * @version 2.0
+ * @since 2025-06-03
+ * @see ViewDoctor
+ * @see Service
  */
 public interface DoctorService extends Service<Doctor> {
     
     /**
-     * Searches for doctors by their specialization.
-     * 
-     * <p>This method returns a list of doctors whose specialization
-     * matches the provided specialization name.</p>
-     * 
-     * @param specialization the medical specialization to search for
-     * @return a list of doctors with the specified specialization;
-     *         an empty list if no doctors match
+     * Finds doctors by their medical specialization and returns them as {@link ViewDoctor} DTOs.
+     * <p>
+     * Searches for doctors whose specialization exactly matches the provided parameter.
+     * The search is case-sensitive and requires an exact match of the specialization name.
+     * </p>
+     *
+     * <p><b>Example:</b>
+     * <pre>
+     * // Find all pediatricians
+     * List<ViewDoctor> pediatricians = doctorService.searchBySpecialization("Pediatrics");
+     * </pre>
+     * </p>
+     *
+     * @param specialization the medical specialization to search for (e.g., "Cardiology", "Pediatrics")
+     * @return a list of {@link ViewDoctor} DTOs with matching specialization;
+     *         empty list if no matches found (never null)
+     * @throws IllegalArgumentException if specialization parameter is null or empty
      */
-    List<Doctor> searchBySpecialization(String specialization);
+    List<ViewDoctor> searchBySpecialization(String specialization);
     
     /**
-     * Searches for doctors by matching their name components.
-     * 
-     * <p>This method attempts to match the provided name string
-     * against the doctor's surname, given name, or other names.</p>
-     * 
-     * @param names a string containing one or more name components
-     * @return a list of doctors whose names match the given components;
-     *         an empty list if no matches are found
+     * Searches for doctors by name components and returns them as {@link ViewDoctor} DTOs.
+     * <p>
+     * Performs a case-insensitive partial match search against:
+     * <ul>
+     *   <li>Surname (family name)</li>
+     *   <li>Given name (first name)</li>
+     *   <li>Other names (middle names)</li>
+     * </ul>
+     * The search term can match any part of these name fields.
+     * </p>
+     *
+     * <p><b>Examples:</b>
+     * <pre>
+     * // Search for doctors with "Smith" in any name field
+     * List<ViewDoctor> results = doctorService.searchByNames("Smith");
+     *
+     * // Search for doctors with "John" or "Jon" in any name field
+     * List<ViewDoctor> results = doctorService.searchByNames("Jon");
+     * </pre>
+     * </p>
+     *
+     * @param names the search term to match against name fields (partial, case-insensitive)
+     * @return a list of {@link ViewDoctor} DTOs whose names contain the search term;
+     *         empty list if no matches found (never null)
+     * @throws IllegalArgumentException if names parameter is null or empty
      */
-    List<Doctor> searchByNames(String names);
+    List<ViewDoctor> searchByNames(String names);
 }

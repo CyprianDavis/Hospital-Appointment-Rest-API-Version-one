@@ -10,23 +10,33 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctor;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.repository.DoctorRepository;
 import com.davis.hospital_Appointment_Rest_API.service.DoctorService;
 
 /**
- * Implementation of the {@link DoctorService} interface that provides
- * CRUD operations and search functionality for {@link Doctor} entities.
+ * Service implementation for doctor-related operations in the Hospital Appointment System.
  * <p>
- * This service handles all business logic related to doctor management,
- * delegating persistence operations to the {@link DoctorRepository}.
+ * Provides concrete implementation of {@link DoctorService} interface, handling business logic
+ * for doctor management and search operations. Returns {@link ViewDoctor} DTOs for read operations
+ * while maintaining {@link Doctor} entities for create/update operations.
  * </p>
- * 
+ *
+ * <p><b>Key Responsibilities:</b>
+ * <ul>
+ *   <li>Managing doctor persistence operations</li>
+ *   <li>Implementing search functionality</li>
+ *   <li>Converting between entities and DTOs</li>
+ *   <li>Enforcing business rules and validation</li>
+ * </ul>
+ * </p>
+ *
  * @author CYPRIAN DAVIS
- * @version 1.0
+ * @version 2.0
  * @since 2025-06-29
  * @see DoctorService
- * @see Doctor
+ * @see ViewDoctor
  * @see DoctorRepository
  */
 @Service
@@ -36,9 +46,14 @@ public class DoctorServiceImp implements DoctorService {
     private DoctorRepository doctorRepository;
 
     /**
-     * Retrieves all doctors from the database.
+     * Retrieves all doctors from the system as entities.
+     * <p>
+     * Note: For display purposes, consider using repository methods that return
+     * {@link ViewDoctor} DTOs directly for better performance.
+     * </p>
      *
-     * @return a list of all doctors (empty list if no doctors found)
+     * @return list of all {@link Doctor} entities in the system;
+     *         empty list if no doctors exist (never null)
      */
     @Override
     public List<Doctor> findAll() {
@@ -46,41 +61,62 @@ public class DoctorServiceImp implements DoctorService {
     }
 
     /**
-     * Saves a doctor entity to the database.
+     * Persists a doctor entity in the system.
      * <p>
-     * Can be used for both creating new doctors and updating existing ones.
+     * Handles both creation of new doctors and updates to existing ones.
+     * Performs basic validation before persistence.
      * </p>
      *
-     * @param doctor the doctor entity to be saved (must not be null)
-     * @return the saved doctor entity
-     * @throws IllegalArgumentException if the doctor parameter is null
+     * @param doctor the doctor entity to be persisted (must not be null)
+     * @return the persisted {@link Doctor} entity with generated ID if new
+     * @throws IllegalArgumentException if doctor parameter is null
+     * @throws org.springframework.dao.DataAccessException on persistence failure
      */
     @Override
     public Doctor save(Doctor doctor) {
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor entity cannot be null");
+        }
         return doctorRepository.save(doctor);
     }
 
     /**
-     * Searches for doctors by their specialization.
+     * Finds doctors by medical specialization and returns them as {@link ViewDoctor} DTOs.
+     * <p>
+     * The search is case-sensitive and requires exact specialization name match.
+     * Results contain only display-optimized DTOs with essential doctor information.
+     * </p>
      *
-     * @param specialization the specialization to search for
-     * @return a list of doctors matching the specialization (empty list if none found)
-     * @throws IllegalArgumentException if the specialization parameter is null
+     * @param specialization the medical specialization to search for
+     *        (e.g., "Cardiology", "Pediatrics"; must not be null or empty)
+     * @return list of {@link ViewDoctor} DTOs matching the specialization;
+     *         empty list if no matches found (never null)
+     * @throws IllegalArgumentException if specialization is null or empty
      */
     @Override
-    public List<Doctor> searchBySpecialization(String specialization) {
-        return doctorRepository.searchByName(specialization);
+    public List<ViewDoctor> searchBySpecialization(String specialization) {
+        if (specialization == null || specialization.trim().isEmpty()) {
+            throw new IllegalArgumentException("Specialization cannot be null or empty");
+        }
+        return doctorRepository.findBySpecialization(specialization);
     }
 
     /**
-     * Searches for doctors by their names.
+     * Performs an advanced name search across all doctor name fields.
+     * <p>
+     * Searches case-insensitively across surname, given name, and other names.
+     * Handles multiple search terms by returning only doctors matching all terms.
+     * Results are returned as display-optimized {@link ViewDoctor} DTOs.
+     * </p>
      *
-     * @param names the name or partial name to search for
-     * @return a list of doctors matching the name criteria (empty list if none found)
-     * @throws IllegalArgumentException if the names parameter is null
+     * @param names the search term(s) to match against doctor names
+     *        (will be split on whitespace; must not be null or empty)
+     * @return list of {@link ViewDoctor} DTOs matching all search terms;
+     *         empty list if no matches found (never null)
+     * @throws IllegalArgumentException if names parameter is null or empty
      */
     @Override
-    public List<Doctor> searchByNames(String names) {
+    public List<ViewDoctor> searchByNames(String names) {
         if (names == null || names.trim().isEmpty()) {
             throw new IllegalArgumentException("Names parameter cannot be null or empty");
         }
@@ -88,29 +124,38 @@ public class DoctorServiceImp implements DoctorService {
         String[] terms = names.trim().split("\\s+");
         
         // Get matches for each term in parallel
-        List<List<Doctor>> allMatches = Arrays.stream(terms)
+        List<List<ViewDoctor>> allMatches = Arrays.stream(terms)
             .map(doctorRepository::searchByName)
             .toList();
         
         // Find intersection of all result sets
         return allMatches.stream()
             .reduce((list1, list2) -> {
-                Set<Doctor> set = new HashSet<>(list2);
+                Set<ViewDoctor> set = new HashSet<>(list2);
                 return list1.stream()
                     .filter(set::contains)
                     .toList();
             })
             .orElse(Collections.emptyList());
     }
+
     /**
-     * Finds a doctor by their unique identifier.
+     * Retrieves a doctor by their unique identifier.
+     * <p>
+     * Returns the result as an {@link Optional} to explicitly handle the
+     * case where no doctor exists with the given ID.
+     * </p>
      *
-     * @param id the ID of the doctor to search for (must not be null or empty)
-     * @return an {@link Optional} containing the doctor if found,
-     *         or empty Optional if no doctor with the given ID exists
-     * @throws IllegalArgumentException if the id parameter is null or empty
+     * @param id the unique identifier of the doctor to find
+     *        (must not be null or empty)
+     * @return {@link Optional} containing the found {@link Doctor} entity,
+     *         or empty Optional if not found
+     * @throws IllegalArgumentException if id parameter is null or empty
      */
     public Optional<Doctor> findById(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID parameter cannot be null or empty");
+        }
         return doctorRepository.findById(id);
     }
 }
