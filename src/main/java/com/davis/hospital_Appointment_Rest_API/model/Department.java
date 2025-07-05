@@ -1,7 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,7 +50,7 @@ public class Department {
     
     /** Physical location code within the hospital (e.g., "BLDG-A-2F") */
     @Column(name="location_code")
-    private String locactionCode;
+    private String locationCode;
     
     /** Direct contact number for the department */
     private String contact;
@@ -85,11 +84,11 @@ public class Department {
      * @param createdOn Creation timestamp
      * @param updatedOn Last update timestamp
      */
-    public Department(String department, String description, String locactionCode, String contact, Doctor headOfDepart,
+    public Department(String department, String description, String locationCode, String contact, Doctor headOfDepart,
             LocalDateTime createdOn, LocalDateTime updatedOn) {
         this.name = department;
         this.description = description;
-        this.locactionCode = locactionCode;
+        this.locationCode = locationCode;
         this.contact = contact;
         this.headOfDepart = headOfDepart;
         this.createdOn = createdOn;
@@ -113,21 +112,7 @@ public class Department {
         this.departId = departId;
     }
     
-    /**
-     * Gets the department name
-     * @return The department name
-     */
-    public String getDepartment() {
-        return name;
-    }
     
-    /**
-     * Sets the department name
-     * @param department The name to set
-     */
-    public void setDepartment(String department) {
-        this.name = department;
-    }
     
     /**
      * Gets the department description
@@ -138,6 +123,18 @@ public class Department {
     }
     
     /**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
      * Sets the department description
      * @param description The service description to set
      */
@@ -149,16 +146,16 @@ public class Department {
      * Gets the location code
      * @return The physical location identifier
      */
-    public String getLocactionCode() {
-        return locactionCode;
+    public String getLocationCode() {
+        return locationCode;
     }
     
     /**
      * Sets the location code
      * @param locactionCode The location identifier to set
      */
-    public void setLocactionCode(String locactionCode) {
-        this.locactionCode = locactionCode;
+    public void setLocationCode(String locationCode) {
+        this.locationCode = locationCode;
     }
     
     /**

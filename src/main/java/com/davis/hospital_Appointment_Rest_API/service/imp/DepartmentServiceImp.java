@@ -1,8 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.service.imp;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +29,7 @@ public class DepartmentServiceImp implements DepartmentService{
 		// TODO Auto-generated method stub
 		//Set Creation date and Status
 		LocalDateTime now = LocalDateTime.now();
-		department.setCreatedOn(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+		department.setCreatedOn(now);
 				
 		return departmentRepository.save(department);
 	}
@@ -45,7 +43,7 @@ public class DepartmentServiceImp implements DepartmentService{
 	@Override
 	public Optional<Department> findByLocationCode(String code) {
 		// TODO Auto-generated method stub
-		return departmentRepository.findByLocactionCode(code);
+		return departmentRepository.findByLocationCode(code);
 	}
 
 }

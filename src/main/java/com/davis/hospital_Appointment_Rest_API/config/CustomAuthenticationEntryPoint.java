@@ -45,10 +45,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             errorMessage = "Invalid username or password";
             errorCode = "BAD_CREDENTIALS";
         } else if (authException instanceof InsufficientAuthenticationException) {
-            errorMessage = "Authentication required";
+            errorMessage = "Invalid username or password";
             errorCode = "UNAUTHENTICATED";
         } else {
-            errorMessage = "Authentication failed";
+            errorMessage = "Invalid username or password";
             errorCode = "AUTH_FAILURE";
         }
         

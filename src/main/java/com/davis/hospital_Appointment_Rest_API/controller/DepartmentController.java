@@ -103,7 +103,7 @@ public class DepartmentController {
      *         - 404 Not Found if the department doesn't exist
      *         - 500 Internal Server Error if an exception occurs
      */
-    @GetMapping("/department/{name}")
+    @GetMapping("/search/by-name/{name}")
     public ResponseEntity<ApiResponse<Optional<Department>>> getDepartmentByName(
             @PathVariable("name") String depart) {
         try {
@@ -132,7 +132,7 @@ public class DepartmentController {
      *         - 404 Not Found if the department doesn't exist
      *         - 500 Internal Server Error if an exception occurs
      */
-    @GetMapping("/department/{locationCode}")
+    @GetMapping("/by-location/{locationCode}")
     public ResponseEntity<ApiResponse<Optional<Department>>> getDepartmentByLocationCode(
             @PathVariable("locationCode") String code) {
         try {

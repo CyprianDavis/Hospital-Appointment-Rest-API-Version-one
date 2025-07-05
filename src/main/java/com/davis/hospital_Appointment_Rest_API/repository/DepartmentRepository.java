@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import com.davis.hospital_Appointment_Rest_API.model.Department;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
      * @return an {@link Optional} containing the matching department if found, 
      *         or empty if no match exists
      */
+    @Query("SELECT d FROM Department d WHERE LOWER(d.name) = LOWER(:name)")
     Optional<Department> findByNameIgnoreCase(String name);
     
     /**
@@ -27,5 +29,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
      * @return an {@link Optional} containing the department with the specified location code
      *         if found, or empty if no match exists
      */
-    Optional<Department> findByLocactionCode(String locationCode);
+    @Query("SELECT d FROM Department d WHERE d.locationCode = :locationCode")
+    Optional<Department> findByLocationCode(String locationCode);
 }

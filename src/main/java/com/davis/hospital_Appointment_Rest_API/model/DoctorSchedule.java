@@ -13,9 +13,9 @@ import jakarta.persistence.Table;
  * Represents a doctor's schedule in the Hospital Appointment System.
  * <p>
  * This entity maps a doctor's availability for appointments on specific days,
- * including their working hours and maximum appointment capacity. Each schedule
- * entry defines when a doctor is available for appointments on a particular day
- * of the week.
+ * including their working hours, maximum appointment capacity, and availability
+ * confirmation status. Each schedule entry defines when a doctor is available
+ * for appointments on a particular day of the week.
  * </p>
  * 
  * <p><b>Relationships:</b>
@@ -26,7 +26,7 @@ import jakarta.persistence.Table;
  * 
  * <p><b>Table Structure:</b>
  * <ul>
- *   <li>doctor_schedule - Stores all doctor schedule entries</li>
+ *   <li>Doctor_Schedule - Stores all doctor schedule entries</li>
  * </ul>
  * </p>
  * 
@@ -85,12 +85,37 @@ public class DoctorSchedule {
     private LocalTime endTime;
     
     /**
-     * The maximum number of appointments allowed during this time slot.
+     * The number of available appointment slots during this time period.
      * <p>
-     * Used to limit patient bookings for this schedule entry.
+     * Calculated based on the time window and accounting for breaks.
      * </p>
      */
-    private int maximumAppointments;
+    private int availableSlots;
+    
+    /**
+     * Indicates whether the doctor has confirmed their availability.
+     * <p>
+     * Defaults to false (unconfirmed). When true, the schedule is
+     * guaranteed to be available for appointments.
+     * </p>
+     */
+    private boolean isConfirmed;
+    
+    /**
+     * The timestamp when this schedule entry was created.
+     * <p>
+     * Automatically set when the schedule is first persisted.
+     * </p>
+     */
+    private LocalTime createdOn;
+    
+    /**
+     * The timestamp when this schedule entry was last modified.
+     * <p>
+     * Updated whenever any field in the schedule is changed.
+     * </p>
+     */
+    private LocalTime lastUpdated;
 
     /**
      * Constructs a new DoctorSchedule with the specified parameters.
@@ -107,8 +132,12 @@ public class DoctorSchedule {
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.maximumAppointments = maximumAppointments;
+        this.availableSlots = maximumAppointments;
     }
+
+    /**
+     * Default constructor required by JPA.
+     */
     public DoctorSchedule() {}
 
     /**
@@ -208,17 +237,100 @@ public class DoctorSchedule {
      * Gets the maximum number of appointments allowed.
      *
      * @return the maximum appointments (positive integer)
+     * @deprecated Use {@link #getAvailableSlots()} instead
      */
+    @Deprecated
     public int getMaximumAppointments() {
-        return maximumAppointments;
+        return availableSlots;
     }
 
     /**
      * Sets the maximum number of appointments allowed.
      *
      * @param maximumAppointments the maximum appointments to set (must be positive)
+     * @deprecated Use {@link #setAvailableSlots(int)} instead
      */
+    @Deprecated
     public void setMaximumAppointments(int maximumAppointments) {
-        this.maximumAppointments = maximumAppointments;
+        this.availableSlots = maximumAppointments;
+    }
+
+    /**
+     * Gets the number of available appointment slots.
+     *
+     * @return the number of available slots
+     */
+    public int getAvailableSlots() {
+        return availableSlots;
+    }
+
+    /**
+     * Sets the number of available appointment slots.
+     *
+     * @param availableSlots the number of slots to set (must be positive)
+     * @throws IllegalArgumentException if availableSlots is negative
+     */
+    public void setAvailableSlots(int availableSlots) {
+        if (availableSlots < 0) {
+            throw new IllegalArgumentException("Available slots cannot be negative");
+        }
+        this.availableSlots = availableSlots;
+    }
+
+    /**
+     * Checks if the doctor has confirmed this schedule.
+     *
+     * @return true if the schedule is confirmed, false otherwise
+     */
+    public boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    /**
+     * Sets the confirmation status of this schedule.
+     *
+     * @param isConfirmed the confirmation status to set
+     */
+    public void setConfirmed(boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
+    }
+
+    /**
+     * Gets the creation timestamp of this schedule.
+     *
+     * @return the creation timestamp
+     */
+    public LocalTime getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * Sets the creation timestamp of this schedule.
+     * <p>
+     * Note: Typically only used by JPA, not for business logic.
+     * </p>
+     *
+     * @param createdOn the creation timestamp to set
+     */
+    public void setCreatedOn(LocalTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    /**
+     * Gets the last updated timestamp of this schedule.
+     *
+     * @return the last update timestamp
+     */
+    public LocalTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    /**
+     * Sets the last updated timestamp of this schedule.
+     *
+     * @param lastUpdated the update timestamp to set
+     */
+    public void setLastUpdated(LocalTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }
