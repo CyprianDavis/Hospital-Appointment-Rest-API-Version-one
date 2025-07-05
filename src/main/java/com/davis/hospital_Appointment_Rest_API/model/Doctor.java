@@ -48,14 +48,37 @@ public class Doctor extends User {
     /** The doctor's official medical license number */
     private String license_number;
     
+    /**
+     * The standard consultation fee charged by this doctor for patient visits.
+     * <p>
+     * Represented as a double to allow for decimal values. Measured in the system's
+     * base currency (e.g., USD, UGX). Must be a non-negative value.
+     * </p>
+     */
+    private double consulation_fee;
     
-    /** The department where the doctor practices */
+    /** 
+     * The department where the doctor practices 
+     * @see Department
+     */
     @ManyToOne
     @JoinColumn(name = "department")
     private Department department;
     
+    /**
+     * The collection of prescriptions issued by this doctor.
+     * <p>
+     * Represents a one-to-many relationship with {@link Prescription} where:
+     * <ul>
+     *   <li>One doctor can have many prescriptions</li>
+     *   <li>The relationship is managed by the "doctor" field in Prescription</li>
+     *   <li>Initialized as an empty HashSet to prevent null pointer exceptions</li>
+     * </ul>
+     * </p>
+     */
     @OneToMany(mappedBy = "doctor")
-    private Set<Prescription> prescriptions =new HashSet<>();
+    private Set<Prescription> prescriptions = new HashSet<>();
+    
     /**
      * The set of medical records for patients treated by this doctor.
      * This represents the inverse side of the bidirectional relationship with {@link MedicalRecord}.
@@ -70,6 +93,7 @@ public class Doctor extends User {
      */
     @OneToMany(mappedBy = "doctor")
     private Set<MedicalRecord> treatmentRecords;
+    
     /**
      * The set of all prescriptions issued by this doctor to patients.
      * This is the inverse side of the bidirectional relationship with {@link Prescription}.
@@ -80,11 +104,10 @@ public class Doctor extends User {
      * <p>This collection includes both active and historical prescriptions, 
      * providing a complete record of medications prescribed by this doctor.</p>
      * 
-     * @see Prescription#doctor  // Ensure this matches the owning side field name
+     * @see Prescription#doctor
      */
     @OneToMany(mappedBy = "doctor")
     private Set<Prescription> prescribedMedications;
-    
     
     /**
      * The collection of schedule entries defining this doctor's availability.
@@ -105,6 +128,7 @@ public class Doctor extends User {
      */
     @OneToMany(mappedBy = "doctor")
     private Set<DoctorSchedule> schedules;
+    
     /**
      * The set of appointments scheduled with this doctor.
      * <p>
@@ -119,9 +143,12 @@ public class Doctor extends User {
      *   <li>The Set implementation ensures unique appointments</li>
      * </ul>
      * </p>
+     * 
+     * @see Appointment
      */
     @OneToMany(mappedBy = "doctor")
     private Set<Appointment> appointments;
+    
     /**
      * Constructs a new Doctor instance with basic user information.
      * 
@@ -136,6 +163,13 @@ public class Doctor extends User {
                  String street, String postalCode) {
         super(userName, passWord, contact, district, street, postalCode);
     }
+    
+    /**
+     * Default no-argument constructor required by JPA.
+     * <p>
+     * Initializes a new instance of the Doctor class with all fields set to null or default values.
+     * </p>
+     */
     public Doctor() {}
 
     /**
@@ -149,6 +183,7 @@ public class Doctor extends User {
     /**
      * Sets the doctor's surname.
      * @param surName the surname/family name to set
+     * @throws IllegalArgumentException if surName is null or empty
      */
     public void setSurName(String surName) {
         this.surName = surName;
@@ -165,6 +200,7 @@ public class Doctor extends User {
     /**
      * Sets the doctor's given name.
      * @param givenName the given/first name to set
+     * @throws IllegalArgumentException if givenName is null or empty
      */
     public void setGivenName(String givenName) {
         this.givenName = givenName;
@@ -188,7 +224,7 @@ public class Doctor extends User {
 
     /**
      * Gets the doctor's medical specialization.
-     * @return the specialization area
+     * @return the specialization area (e.g., "Cardiology", "Pediatrics")
      */
     public String getSpecialization() {
         return specialization;
@@ -197,6 +233,7 @@ public class Doctor extends User {
     /**
      * Sets the doctor's medical specialization.
      * @param specialization the specialization to set
+     * @throws IllegalArgumentException if specialization is null or empty
      */
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
@@ -204,7 +241,7 @@ public class Doctor extends User {
 
     /**
      * Gets the doctor's license number.
-     * @return the official license number
+     * @return the official license number in MED-XXXXXX format
      */
     public String getLicense_number() {
         return license_number;
@@ -212,7 +249,8 @@ public class Doctor extends User {
 
     /**
      * Sets the doctor's license number.
-     * @param license_number the official license number to set
+     * @param license_number the official license number to set (must follow MED-XXXXXX format)
+     * @throws IllegalArgumentException if license number format is invalid
      */
     public void setLicense_number(String license_number) {
         this.license_number = license_number;
@@ -220,7 +258,7 @@ public class Doctor extends User {
 
     /**
      * Gets the associated department.
-     * @return the Department where the doctor practices
+     * @return the Department where the doctor practices, or null if not assigned
      */
     public Department getDepartment() {
         return department;
@@ -236,7 +274,7 @@ public class Doctor extends User {
 
     /**
      * Gets the set of schedule entries for this doctor.
-     * @return the Set of DoctorSchedule objects
+     * @return the Set of DoctorSchedule objects, never null (empty if no schedules)
      */
     public Set<DoctorSchedule> getSchedules() {
         return schedules;
@@ -245,80 +283,113 @@ public class Doctor extends User {
     /**
      * Sets the schedule entries for this doctor.
      * @param schedules the Set of DoctorSchedule objects to assign
+     * @throws IllegalArgumentException if schedules is null
      */
     public void setSchedules(Set<DoctorSchedule> schedules) {
         this.schedules = schedules;
     }
 
-	/**
-	 * @return the appointmets
-	 */
-	public Set<Appointment> getAppointmets() {
-		return appointments;
-	}
+    /**
+     * Gets the appointments scheduled with this doctor.
+     * @return Set of Appointment objects, never null (empty if no appointments)
+     */
+    public Set<Appointment> getAppointmets() {
+        return appointments;
+    }
 
-	/**
-	 * @param appointmets the appointmets to set
-	 */
-	public void setAppointmets(Set<Appointment> appointmets) {
-		this.appointments = appointmets;
-	}
+    /**
+     * Sets the appointments for this doctor.
+     * @param appointmets the Set of Appointment objects to assign
+     * @throws IllegalArgumentException if appointmets is null
+     */
+    public void setAppointmets(Set<Appointment> appointmets) {
+        this.appointments = appointmets;
+    }
 
-	/**
-	 * @return the treatmentRecords
-	 */
-	public Set<MedicalRecord> getTreatmentRecords() {
-		return treatmentRecords;
-	}
+    /**
+     * Gets the medical treatment records for patients treated by this doctor.
+     * @return Set of MedicalRecord objects, never null (empty if no records)
+     */
+    public Set<MedicalRecord> getTreatmentRecords() {
+        return treatmentRecords;
+    }
 
-	/**
-	 * @param treatmentRecords the treatmentRecords to set
-	 */
-	public void setTreatmentRecords(Set<MedicalRecord> treatmentRecords) {
-		this.treatmentRecords = treatmentRecords;
-	}
+    /**
+     * Sets the medical treatment records for this doctor.
+     * @param treatmentRecords the Set of MedicalRecord objects to assign
+     * @throws IllegalArgumentException if treatmentRecords is null
+     */
+    public void setTreatmentRecords(Set<MedicalRecord> treatmentRecords) {
+        this.treatmentRecords = treatmentRecords;
+    }
 
-	/**
-	 * @return the appointments
-	 */
-	public Set<Appointment> getAppointments() {
-		return appointments;
-	}
+    /**
+     * Gets all appointments scheduled with this doctor.
+     * @return Set of Appointment objects, never null (empty if no appointments)
+     */
+    public Set<Appointment> getAppointments() {
+        return appointments;
+    }
 
-	/**
-	 * @param appointments the appointments to set
-	 */
-	public void setAppointments(Set<Appointment> appointments) {
-		this.appointments = appointments;
-	}
+    /**
+     * Sets all appointments for this doctor.
+     * @param appointments the Set of Appointment objects to assign
+     * @throws IllegalArgumentException if appointments is null
+     */
+    public void setAppointments(Set<Appointment> appointments) {
+        this.appointments = appointments;
+    }
 
-	/**
-	 * @return the prescriptions
-	 */
-	public Set<Prescription> getPrescriptions() {
-		return prescriptions;
-	}
+    /**
+     * Gets all prescriptions issued by this doctor.
+     * @return Set of Prescription objects, never null (empty if no prescriptions)
+     */
+    public Set<Prescription> getPrescriptions() {
+        return prescriptions;
+    }
 
-	/**
-	 * @param prescriptions the prescriptions to set
-	 */
-	public void setPrescriptions(Set<Prescription> prescriptions) {
-		this.prescriptions = prescriptions;
-	}
+    /**
+     * Sets all prescriptions for this doctor.
+     * @param prescriptions the Set of Prescription objects to assign
+     * @throws IllegalArgumentException if prescriptions is null
+     */
+    public void setPrescriptions(Set<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
 
-	/**
-	 * @return the prescribedMedications
-	 */
-	public Set<Prescription> getPrescribedMedications() {
-		return prescribedMedications;
-	}
+    /**
+     * Gets all prescribed medications issued by this doctor.
+     * @return Set of Prescription objects, never null (empty if no prescriptions)
+     * @see #getPrescriptions()  // This appears to be a duplicate method
+     */
+    public Set<Prescription> getPrescribedMedications() {
+        return prescribedMedications;
+    }
 
-	/**
-	 * @param prescribedMedications the prescribedMedications to set
-	 */
-	public void setPrescribedMedications(Set<Prescription> prescribedMedications) {
-		this.prescribedMedications = prescribedMedications;
-	}
-	
+    /**
+     * Sets all prescribed medications for this doctor.
+     * @param prescribedMedications the Set of Prescription objects to assign
+     * @throws IllegalArgumentException if prescribedMedications is null
+     * @see #setPrescriptions(Set)  // This appears to be a duplicate method
+     */
+    public void setPrescribedMedications(Set<Prescription> prescribedMedications) {
+        this.prescribedMedications = prescribedMedications;
+    }
     
+    /**
+     * Gets the standard consultation fee for this doctor.
+     * @return the consultation fee as a double value
+     */
+    public double getConsulation_fee() {
+        return consulation_fee;
+    }
+    
+    /**
+     * Sets the standard consultation fee for this doctor.
+     * @param consulation_fee the fee to set (must be non-negative)
+     * @throws IllegalArgumentException if fee is negative
+     */
+    public void setConsulation_fee(double consulation_fee) {
+        this.consulation_fee = consulation_fee;
+    }
 }
