@@ -7,8 +7,6 @@ import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
@@ -51,7 +49,7 @@ public abstract class User {
     private String userName;
     
     /** Encrypted password (should be hashed in production) */
-   // @JsonIgnore
+   
     private String passWord;
     
     /** Contact phone number in international format (e.g., +256...) */
@@ -144,7 +142,6 @@ public abstract class User {
      * 
      * @see Notification
      */
-    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Notification> notifications = new HashSet<>();
 

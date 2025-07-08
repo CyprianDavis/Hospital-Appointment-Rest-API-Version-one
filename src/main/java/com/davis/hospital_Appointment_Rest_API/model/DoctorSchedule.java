@@ -6,6 +6,9 @@ import java.time.LocalTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.davis.hospital_Appointment_Rest_API.utils.LocalTimeDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -79,6 +82,7 @@ public class DoctorSchedule {
      * Uses Java 8 {@link LocalTime} to represent time without date.
      * </p>
      */
+    @JsonDeserialize(using = LocalTimeDeserializer.class)
     private LocalTime startTime;
     
     /**
@@ -87,6 +91,7 @@ public class DoctorSchedule {
      * Uses Java 8 {@link LocalTime} to represent time without date.
      * </p>
      */
+    @JsonDeserialize(using = LocalTimeDeserializer.class)
     private LocalTime endTime;
     
     /**

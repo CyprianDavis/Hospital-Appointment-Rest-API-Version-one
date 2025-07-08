@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorScheduleServiceImp;
+import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorServiceImp;
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 
 /**
@@ -26,27 +29,43 @@ import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 public class DoctorScheduleController {
     
     private final DoctorScheduleServiceImp doctorScheduleServiceImp;
+    private final DoctorServiceImp doctorServiceImp;
     
     /**
      * Constructs a new DoctorScheduleController with the specified service implementation.
      * 
      * @param doctorScheduleServiceImp the service implementation for doctor schedule operations
      */
-    public DoctorScheduleController(DoctorScheduleServiceImp doctorScheduleServiceImp) {
+    public DoctorScheduleController(DoctorScheduleServiceImp doctorScheduleServiceImp, DoctorServiceImp doctorServiceImp) {
         this.doctorScheduleServiceImp = doctorScheduleServiceImp;
+        this.doctorServiceImp = doctorServiceImp;
     }
     
     /**
-     * Creates a new doctor schedule entry.
+     * Creates a new doctor schedule entry for a specific doctor.
      * 
-     * @param doctorSchedule the doctor schedule data to be created
+     * @param doctorId the ID of the doctor to associate with this schedule
+     * @param doctorSchedule the doctor schedule data to be created (without doctor object)
      * @return ResponseEntity containing the created schedule with HTTP 201 status on success,
      *         error message with HTTP 400 status if creation fails,
      *         or HTTP 500 status for server errors
      */
-    @PostMapping
-    public ResponseEntity<?> addSchedule(@RequestBody DoctorSchedule doctorSchedule) {
+    @PostMapping("/{doctorId}")
+    public ResponseEntity<?> addSchedule(
+            @PathVariable String doctorId,
+            @RequestBody DoctorSchedule doctorSchedule) {
         try {
+            // Find the doctor first
+            Optional<Doctor> doctorOptional = doctorServiceImp.findById(doctorId);
+            
+            if (!doctorOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse<>(false, "Doctor not found with ID: " + doctorId));
+            }
+
+            // Associate the doctor with the schedule
+            doctorSchedule.setDoctor(doctorOptional.get());
+            
             DoctorSchedule savedDoctorSchedule = doctorScheduleServiceImp.save(doctorSchedule);
             
             if(savedDoctorSchedule != null) {

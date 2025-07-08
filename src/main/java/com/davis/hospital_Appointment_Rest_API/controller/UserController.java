@@ -113,7 +113,7 @@ public class UserController {
             		
             	
                 return ResponseEntity.status(HttpStatus.CREATED)
-                        .body(new ApiResponse<>(true, userType + " registered successfully", savedUser));
+                        .body(new ApiResponse<>(true, userType + " registered successfully", savedUser.getUserId()));
             } else {
                 // Failure case - return 400 Bad Request
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)

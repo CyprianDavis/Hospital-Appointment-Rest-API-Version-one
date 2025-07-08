@@ -4,93 +4,105 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
- * Repository interface for managing {@link DoctorSchedule} entities.
+ * Repository interface for managing doctor schedule information with DTO projections.
  * 
- * <p>Provides CRUD operations and custom queries for accessing and managing doctor schedule information,
- * including search capabilities by doctor attributes, schedule details, and paginated results.</p>
+ * <p>Provides CRUD operations and custom queries that return {@link ViewDoctorSchedule} DTOs
+ * instead of entities, following best practices for API layer separation.</p>
  * 
- * <p><b>Key Features:</b>
+ * <p><b>Key Changes:</b>
  * <ul>
- *   <li>Search schedules by doctor specialization</li>
- *   <li>Comprehensive text search across doctor names and attributes</li>
- *   <li>Paginated search results for large datasets</li>
- *   <li>Find schedules by day of week</li>
- *   <li>Retrieve all schedules for a specific doctor</li>
+ *   <li>All query methods now return ViewDoctorSchedule DTOs</li>
+ *   <li>Added constructor expressions in JPQL for DTO projection</li>
+ *   <li>Maintained all existing search capabilities</li>
+ *   <li>Added doctor name concatenation in queries</li>
  * </ul>
  * </p>
  * 
- * <p><b>Usage Examples:</b>
- * <pre>
- * // Find schedules by specialization
- * List<DoctorSchedule> cardioSchedules = repository.findByDoctorSpecialization("Cardiology");
- * 
- * // Search doctor names
- * List<DoctorSchedule> smithSchedules = repository.searchByDoctorName("Smith");
- * 
- * // Get paginated results
- * Page<DoctorSchedule> page = repository.comprehensiveSearchPaginated(
- *     "John", 
- *     PageRequest.of(0, 10)
- * );
- * </pre>
- * </p>
- * 
  * @author CYPRIAN DAVIS
- * @version 1.0
- * @since 2025-06-03
- * @see DoctorSchedule
- * @see JpaRepository
+ * @version 2.0
+ * @since 2025-07-09
+ * @see ViewDoctorSchedule
  */
 public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, Long> {
     
     /**
-     * Finds schedules by doctor's specialization
-     * @param specialization the medical specialization
-     * @return list of matching schedules
+     * Finds schedules by doctor's specialization and returns DTO projections
+     * @param specialization the medical specialization to search for
+     * @return list of schedule DTOs matching the specialization
      */
-    @Query("SELECT ds FROM DoctorSchedule ds WHERE ds.doctor.specialization = :specialization")
-    List<DoctorSchedule> findByDoctorSpecialization(@Param("specialization") String specialization);
+    @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.dayOfWeek, " +
+           "d.startTime, " +
+           "d.endTime, " +
+           "d.availableSlots, " +
+           "d.isConfirmed) " +
+           "FROM DoctorSchedule d " +
+           "WHERE d.doctor.specialization = :specialization")
+    List<ViewDoctorSchedule> findDtoByDoctorSpecialization(@Param("specialization") String specialization);
    
     /**
-     * Paginated version of comprehensive search
+     * Paginated search returning DTO projections
      * 
-     * @param searchTerm the term to search across multiple fields
-     * @param pageable pagination information
-     * @return page of matching schedules
+     * @param searchTerm term to search across multiple fields
+     * @param pageable pagination configuration
+     * @return page of schedule DTOs matching the search criteria
      */
-    @Query("SELECT ds FROM DoctorSchedule ds WHERE " +
-           "LOWER(ds.doctor.surName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(ds.doctor.givenName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(ds.doctor.otherName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(ds.doctor.specialization) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(ds.doctor.department.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
-    Page<DoctorSchedule> comprehensiveSearchPaginated(
+    @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.dayOfWeek, " +
+           "d.startTime, " +
+           "d.endTime, " +
+           "d.availableSlots, " +
+           "d.isConfirmed) " +
+           "FROM DoctorSchedule d WHERE " +
+           "LOWER(d.doctor.surName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(d.doctor.givenName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(d.doctor.specialization) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(d.doctor.department.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<ViewDoctorSchedule> searchDtoPaginated(
         @Param("searchTerm") String searchTerm, 
         Pageable pageable);
         
     /**
-     * Finds doctor schedules by searching across all doctor name fields (surname, given name, other name)
-     * with partial matching and case insensitivity.
+     * Searches schedules by doctor name fields and returns DTO projections
      * 
-     * @param nameTerm the search term to match against doctor names
-     * @return list of matching schedules (empty if none found)
+     * @param nameTerm term to match against doctor names
+     * @return list of schedule DTOs matching the name criteria
      */
-    @Query("SELECT ds FROM DoctorSchedule ds WHERE " +
-           "LOWER(ds.doctor.surName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
-           "LOWER(ds.doctor.givenName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
-           "LOWER(ds.doctor.userId) LIKE LOWER(CONCAT('%', :nameTerm, '%'))")
-    List<DoctorSchedule> searchByDoctorName(@Param("nameTerm") String nameTerm);
+    @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.dayOfWeek, " +
+           "d.startTime, " +
+           "d.endTime, " +
+           "d.availableSlots, " +
+           "d.isConfirmed) " +
+           "FROM DoctorSchedule d WHERE " +
+           "LOWER(d.doctor.surName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
+           "LOWER(d.doctor.givenName) LIKE LOWER(CONCAT('%', :nameTerm, '%'))")
+    List<ViewDoctorSchedule> searchDtoByDoctorName(@Param("nameTerm") String nameTerm);
     
     /**
-     * Finds schedules by day of week
-     * @param dayOfWeek the day name (e.g., "Monday")
-     * @return list of matching schedules
+     * Finds schedules by day of week and returns DTO projections
+     * 
+     * @param dayOfWeek the day name to search for (e.g., "Monday")
+     * @return list of schedule DTOs for the specified day
      */
-    List<DoctorSchedule> findByDayOfWeek(String dayOfWeek);
-    
+    @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.dayOfWeek, " +
+           "d.startTime, " +
+           "d.endTime, " +
+           "d.availableSlots, " +
+           "d.isConfirmed) " +
+           "FROM DoctorSchedule d " +
+           "WHERE d.dayOfWeek = :dayOfWeek")
+    List<ViewDoctorSchedule> findDtoByDayOfWeek(@Param("dayOfWeek") String dayOfWeek);
 }

@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctor;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
@@ -37,7 +38,36 @@ import com.davis.hospital_Appointment_Rest_API.model.Doctor;
  * @see Service
  */
 public interface DoctorService extends Service<Doctor> {
-	public  List<ViewDoctor> findAllDoctorsAsViewDoctors();
+
+    /**
+     * Retrieves a doctor's view information by their unique identifier.
+     * <p>
+     * Returns a {@link ViewDoctor} DTO containing only display-optimized fields,
+     * wrapped in an {@link Optional} to handle cases where no doctor exists with
+     * the given ID. The DTO excludes sensitive information and includes only
+     * fields needed for display purposes.
+     * </p>
+     *
+     * @param id the unique identifier of the doctor to find (must not be null or empty)
+     * @return {@link Optional} containing the {@link ViewDoctor} DTO if found,
+     *         or empty Optional if no doctor exists with the given ID
+     * @throws IllegalArgumentException if the id parameter is null or empty
+     */
+    Optional<ViewDoctor> findDoctorAsViewDoctorById(String id);
+
+    /**
+     * Retrieves all doctors as lightweight {@link ViewDoctor} DTOs.
+     * <p>
+     * This optimized version returns only the fields needed for display purposes,
+     * providing better performance than the entity-based alternatives. The DTOs
+     * contain all essential doctor information without the overhead of loading
+     * full entity relationships.
+     * </p>
+     *
+     * @return list of all {@link ViewDoctor} DTOs in the system;
+     *         empty list if no doctors exist (never null)
+     */
+    List<ViewDoctor> findAllDoctorsAsViewDoctors();
     
     /**
      * Finds doctors by their medical specialization and returns them as {@link ViewDoctor} DTOs.

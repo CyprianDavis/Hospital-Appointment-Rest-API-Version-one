@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,12 +21,13 @@ import com.davis.hospital_Appointment_Rest_API.model.Doctor;
  *   <li>Find doctors by specialization (DTO projection)</li>
  *   <li>Search doctors by name fields with DTO results</li>
  *   <li>Custom method to find all doctors as DTOs</li>
+ *   <li>Find single doctor by ID as DTO</li>
  *   <li>Uses Spring Data JPA constructor expressions for efficient DTO mapping</li>
  * </ul>
  * </p>
  * 
  * @author CYPRIAN DAVIS
- * @version 2.0
+ * @version 2.1
  * @since 2025-06-03
  * @see ViewDoctor
  * @see Doctor
@@ -47,6 +49,23 @@ public interface DoctorRepository extends JpaRepository<Doctor, String> {
            "d.license_number, d.consulation_fee, d.department.name, d.email, d.contact) " +
            "FROM Doctor d")
     List<ViewDoctor> findAllDoctorsAsViewDoctors();
+
+    /**
+     * Finds a single doctor by ID and returns it as a ViewDoctor DTO.
+     * <p>
+     * Returns the result as an {@link Optional} to handle cases where no doctor exists
+     * with the given ID. The DTO contains only display-optimized fields.
+     * </p>
+     *
+     * @param id the unique identifier of the doctor to find
+     * @return {@link Optional} containing the ViewDoctor DTO if found,
+     *         or empty Optional if no doctor exists with the given ID
+     */
+    @Query("SELECT new com.davis.hospital_Appointment_Rest_API.dto.ViewDoctor(" +
+           "d.userId, d.surName, d.givenName, d.otherName, d.specialization, " +
+           "d.license_number, d.consulation_fee, d.department.name, d.email, d.contact) " +
+           "FROM Doctor d WHERE d.userId = :id")
+    Optional<ViewDoctor> findDoctorAsViewDoctorById(@Param("id") String id);
 
     /**
      * Finds all doctors with the specified medical specialization, returning them as ViewDoctor DTOs.

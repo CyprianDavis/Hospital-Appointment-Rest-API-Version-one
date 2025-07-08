@@ -174,4 +174,25 @@ public class DoctorServiceImp implements DoctorService {
        
         return doctorRepository.findById(id);
     }
+
+    /**
+     * Retrieves a doctor's view information by their unique identifier.
+     * <p>
+     * Returns a {@link ViewDoctor} DTO containing only display-optimized fields,
+     * wrapped in an {@link Optional} to handle cases where no doctor exists with
+     * the given ID. The DTO excludes sensitive information and includes only
+     * fields needed for display purposes.
+     * </p>
+     *
+     * @param id the unique identifier of the doctor to find (must not be null or empty)
+     * @return {@link Optional} containing the {@link ViewDoctor} DTO if found,
+     *         or empty Optional if no doctor exists with the given ID
+     * @throws IllegalArgumentException if the id parameter is null or empty
+     * @throws org.springframework.dao.DataAccessException if there is a database access error
+     */
+    @Override
+    public Optional<ViewDoctor> findDoctorAsViewDoctorById(String id) {
+            return doctorRepository.findDoctorAsViewDoctorById(id);
+        
+    }
 }

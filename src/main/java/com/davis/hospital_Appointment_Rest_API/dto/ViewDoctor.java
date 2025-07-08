@@ -122,7 +122,7 @@ public class ViewDoctor {
      * @param email the doctor's professional email address
      */
     public ViewDoctor(String userId, String surName, String givenName, String otherName, String specialization,
-            String license_number, double consulation_fee, String department, String email) {
+            String license_number, double consulation_fee, String department, String email,String contact) {
         this.userId = userId;
         this.surName = surName;
         this.givenName = givenName;
@@ -132,6 +132,7 @@ public class ViewDoctor {
         this.consulation_fee = consulation_fee;
         this.department = department;
         this.email = email;
+        this.contact = contact;
     }
 
     /**
