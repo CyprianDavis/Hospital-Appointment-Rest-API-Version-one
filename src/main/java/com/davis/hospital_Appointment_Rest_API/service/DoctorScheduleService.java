@@ -1,8 +1,8 @@
 package com.davis.hospital_Appointment_Rest_API.service;
 
-import java.awt.print.Pageable;
 import java.util.List;
-import org.springframework.data.domain.Page;
+
+import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
 
 /**
@@ -27,17 +27,9 @@ public interface DoctorScheduleService extends Service<DoctorSchedule> {
      *         ordered by doctor's last name. Returns empty list if no matches found
      * @throws IllegalArgumentException if specialization is null or empty
      */
-    List<DoctorSchedule> findByDoctorSpecialization(String specialization);
+    List<ViewDoctorSchedule> findByDoctorSpecialization(String specialization);
 
-    /**
-     * Performs a comprehensive search of doctor schedules with pagination support.
-     *
-     * @param pageable pagination information including page number, size, and sorting
-     * @return a page of doctor schedule results matching the search criteria
-     * @throws IllegalArgumentException if pageable is null
-     */
-    Page<DoctorSchedule> comprehensiveSearchPaginated(Pageable pageable);
-
+    
     /**
      * Searches for doctor schedules by the doctor's name.
      *
@@ -46,7 +38,7 @@ public interface DoctorScheduleService extends Service<DoctorSchedule> {
      *         or empty list if no matches found
      * @throws IllegalArgumentException if name is null or empty
      */
-    List<DoctorSchedule> searchByDoctorName(String name);
+    List<ViewDoctorSchedule> searchByDoctorName(String name);
 
     /**
      * Finds doctor schedules available on a specific day of week.
@@ -56,5 +48,5 @@ public interface DoctorScheduleService extends Service<DoctorSchedule> {
      *         ordered by start time. Returns empty list if no matches found
      * @throws IllegalArgumentException if day is null, empty, or not a valid day name
      */
-    List<DoctorSchedule> findByDayOfWeek(String day);
+    List<ViewDoctorSchedule> findByDayOfWeek(String day);
 }
