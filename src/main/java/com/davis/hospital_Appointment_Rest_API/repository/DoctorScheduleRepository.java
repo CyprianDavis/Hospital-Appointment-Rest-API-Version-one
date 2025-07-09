@@ -39,6 +39,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      */
     @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
            "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.doctor.specialization,"+
            "d.dayOfWeek, " +
            "d.startTime, " +
            "d.endTime, " +
@@ -49,29 +50,6 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
     List<ViewDoctorSchedule> findDtoByDoctorSpecialization(@Param("specialization") String specialization);
    
     /**
-     * Paginated search returning DTO projections
-     * 
-     * @param searchTerm term to search across multiple fields
-     * @param pageable pagination configuration
-     * @return page of schedule DTOs matching the search criteria
-     */
-    @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
-           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
-           "d.dayOfWeek, " +
-           "d.startTime, " +
-           "d.endTime, " +
-           "d.availableSlots, " +
-           "d.isConfirmed) " +
-           "FROM DoctorSchedule d WHERE " +
-           "LOWER(d.doctor.surName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(d.doctor.givenName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(d.doctor.specialization) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(d.doctor.department.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
-    Page<ViewDoctorSchedule> searchDtoPaginated(
-        @Param("searchTerm") String searchTerm, 
-        Pageable pageable);
-        
-    /**
      * Searches schedules by doctor name fields and returns DTO projections
      * 
      * @param nameTerm term to match against doctor names
@@ -79,6 +57,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      */
     @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
            "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.doctor.specialization,"+
            "d.dayOfWeek, " +
            "d.startTime, " +
            "d.endTime, " +
@@ -97,6 +76,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      */
     @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
            "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.doctor.specialization,"+
            "d.dayOfWeek, " +
            "d.startTime, " +
            "d.endTime, " +

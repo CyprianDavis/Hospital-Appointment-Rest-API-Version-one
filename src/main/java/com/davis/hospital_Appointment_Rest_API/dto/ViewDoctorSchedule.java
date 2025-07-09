@@ -1,6 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * Data Transfer Object (DTO) representing a doctor's schedule for viewing purposes.
@@ -21,36 +21,38 @@ public class ViewDoctorSchedule {
     /** The day of the week for this schedule (e.g., "Monday", "Tuesday") */
     private String dayOfWeek;
     
-    /** The starting date and time of the schedule slot */
-    private LocalDateTime startTime;
+    /** The starting  time of the schedule slot */
+    private LocalTime startTime;
     
-    /** The ending date and time of the schedule slot */
-    private LocalDateTime endTime;
+    /** The  time of the schedule slot */
+    private LocalTime endTime;
     
     /** The number of available appointment slots during this time period */
     private int availableSlots;
     
     /** Flag indicating whether the schedule has been confirmed by the doctor */
     private boolean isConfirmed;
+    private String specialization;
 
     /**
      * Constructs a new ViewDoctorSchedule with all required fields.
      *
      * @param doctorName     the full name of the doctor
      * @param dayOfWeek      the day of the week for the schedule
-     * @param startTime      the starting date and time of the schedule
-     * @param endTime        the ending date and time of the schedule
+     * @param localTime      the starting date and time of the schedule
+     * @param localTime2        the ending date and time of the schedule
      * @param availableSlots the number of available appointment slots
      * @param isConfirmed    whether the schedule is confirmed
      */
-    public ViewDoctorSchedule(String doctorName, String dayOfWeek, LocalDateTime startTime, 
-                            LocalDateTime endTime, int availableSlots, boolean isConfirmed) {
+    public ViewDoctorSchedule(String doctorName,String specialization, String dayOfWeek, LocalTime starTime, 
+                            LocalTime endTime, int availableSlots, boolean isConfirmed) {
         this.doctorName = doctorName;
         this.dayOfWeek = dayOfWeek;
-        this.startTime = startTime;
+        this.startTime = starTime;
         this.endTime = endTime;
         this.availableSlots = availableSlots;
         this.isConfirmed = isConfirmed;
+        this.specialization = specialization;
     }
 
     /**
@@ -94,7 +96,7 @@ public class ViewDoctorSchedule {
      *
      * @return the start date and time
      */
-    public LocalDateTime getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
@@ -103,16 +105,24 @@ public class ViewDoctorSchedule {
      *
      * @param startTime the start date and time to set
      */
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
+    
     /**
+	 * @param endTime the endTime to set
+	 */
+	public void setEndTime(LocalTime endTime) {
+		this.endTime = endTime;
+	}
+
+	/**
      * Gets the end time of the schedule slot.
      *
      * @return the end date and time
      */
-    public LocalDateTime getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
@@ -121,9 +131,6 @@ public class ViewDoctorSchedule {
      *
      * @param endTime the end date and time to set
      */
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
 
     /**
      * Gets the number of available appointment slots.
@@ -161,4 +168,19 @@ public class ViewDoctorSchedule {
     public void setConfirmed(boolean isConfirmed) {
         this.isConfirmed = isConfirmed;
     }
+
+	/**
+	 * @return the specialization
+	 */
+	public String getSpecialization() {
+		return specialization;
+	}
+
+	/**
+	 * @param specialization the specialization to set
+	 */
+	public void setSpecialization(String specialization) {
+		this.specialization = specialization;
+	}
+    
 }

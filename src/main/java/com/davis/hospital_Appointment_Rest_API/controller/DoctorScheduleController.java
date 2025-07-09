@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorScheduleServiceImp;
@@ -68,13 +69,18 @@ public class DoctorScheduleController {
             
             DoctorSchedule savedDoctorSchedule = doctorScheduleServiceImp.save(doctorSchedule);
             
-            if(savedDoctorSchedule != null) {
-                return ResponseEntity.status(HttpStatus.CREATED)
-                        .body(new ApiResponse<>(true, "Schedule registered successfully", savedDoctorSchedule));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse<>(false, "Schedule registration failed"));
-            }
+         
+
+            // Convert to DTO - you can't directly cast, you need to construct a new DTO
+            ViewDoctorSchedule scheduleDto = new ViewDoctorSchedule(
+               savedDoctorSchedule.getDoctor().getSurName()+" "+savedDoctorSchedule.getDoctor().getGivenName()+" "+
+            savedDoctorSchedule.getDoctor().getOtherName(),savedDoctorSchedule.getDoctor().getSpecialization(),savedDoctorSchedule.getDayOfWeek(),savedDoctorSchedule.getStartTime(),
+            savedDoctorSchedule.getEndTime(),savedDoctorSchedule.getAvailableSlots(),savedDoctorSchedule.isConfirmed()
+            
+            );
+            
+            return ResponseEntity.status(HttpStatus.CREATED)
+			        .body(new ApiResponse<>(true, "Schedule registered successfully", scheduleDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Error: " + e.getMessage()));
@@ -110,10 +116,10 @@ public class DoctorScheduleController {
      *         or an error message with HTTP 500 status if retrieval fails
      */
     @GetMapping("/by-specialization/{specialization}")
-    public ResponseEntity<ApiResponse<List<DoctorSchedule>>> getBySpecialization(
+    public ResponseEntity<ApiResponse<List<ViewDoctorSchedule>>> getBySpecialization(
             @PathVariable String specialization) {
         try {
-            List<DoctorSchedule> doctorSchedules = 
+            List<ViewDoctorSchedule> doctorSchedules = 
                 doctorScheduleServiceImp.findByDoctorSpecialization(specialization);
             String message = doctorSchedules.isEmpty() ?
                     "No schedules found for specialization: " + specialization :
@@ -134,10 +140,10 @@ public class DoctorScheduleController {
      *         or an error message with HTTP 500 status if retrieval fails
      */
     @GetMapping("/by-name/{name}")
-    public ResponseEntity<ApiResponse<List<DoctorSchedule>>> getByDoctorName(
+    public ResponseEntity<ApiResponse<List<ViewDoctorSchedule>>> getByDoctorName(
             @PathVariable String name) {
         try {
-            List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.searchByDoctorName(name);
+            List<ViewDoctorSchedule> doctorSchedules = doctorScheduleServiceImp.searchByDoctorName(name);
             String message = doctorSchedules.isEmpty() ?
                     "No schedules found for doctor: " + name :
                     "Schedules retrieved successfully";
@@ -157,10 +163,10 @@ public class DoctorScheduleController {
      *         or an error message with HTTP 500 status if retrieval fails
      */
     @GetMapping("/by-day/{day}")
-    public ResponseEntity<ApiResponse<List<DoctorSchedule>>> getByDayOfWeek(
+    public ResponseEntity<ApiResponse<List<ViewDoctorSchedule>>> getByDayOfWeek(
             @PathVariable String day) {
         try {
-            List<DoctorSchedule> doctorSchedules = doctorScheduleServiceImp.findByDayOfWeek(day);
+            List<ViewDoctorSchedule> doctorSchedules = doctorScheduleServiceImp.findByDayOfWeek(day);
             String message = doctorSchedules.isEmpty() ?
                     "No schedules found for day: " + day :
                     "Schedules retrieved successfully";
