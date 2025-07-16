@@ -4,8 +4,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -106,5 +109,16 @@ public class ProjectSecurityConfig {
     PasswordEncoder passwordEncoder() {
         // Creates a delegating encoder that supports multiple encoding formats
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+    @Bean
+    AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+    		PasswordEncoder passwordEncoder) {
+    	UserNamePwdAuthenticationProvider authenticationProvider =
+    			new UserNamePwdAuthenticationProvider(userDetailsService, passwordEncoder);
+    	  ProviderManager providerManager = new ProviderManager(authenticationProvider);
+          providerManager.setEraseCredentialsAfterAuthentication(false);
+		  return providerManager;
+    	
+    	
     }
 }

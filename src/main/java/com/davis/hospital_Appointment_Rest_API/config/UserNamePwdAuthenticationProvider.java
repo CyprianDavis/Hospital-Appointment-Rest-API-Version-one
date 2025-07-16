@@ -1,6 +1,5 @@
 package com.davis.hospital_Appointment_Rest_API.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,15 +21,25 @@ public class UserNamePwdAuthenticationProvider implements AuthenticationProvider
      * Service for loading user-specific data during authentication.
      * Injected by Spring's dependency injection mechanism.
      */
-    @Autowired
-    private UserDetailsService userDetailsService;
+    
+    private final UserDetailsService userDetailsService;
 
     /**
      * Password encoder used to verify submitted passwords against stored encoded passwords.
      * Typically configured as a BCryptPasswordEncoder in the security configuration.
      */
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    
+    private final  PasswordEncoder passwordEncoder;
+    
+    /**
+     * Constructor with required dependencies
+     */
+    public UserNamePwdAuthenticationProvider(UserDetailsService userDetailsService, 
+                                           PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
+    
 
     /**
      * Authenticates a user based on username and password credentials.
