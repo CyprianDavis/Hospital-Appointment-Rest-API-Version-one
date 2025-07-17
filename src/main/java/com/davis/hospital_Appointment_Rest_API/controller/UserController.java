@@ -1,15 +1,28 @@
 package com.davis.hospital_Appointment_Rest_API.controller;
 
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.davis.hospital_Appointment_Rest_API.model.Admin;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
+import com.davis.hospital_Appointment_Rest_API.model.LoginRequest;
 import com.davis.hospital_Appointment_Rest_API.model.Patient;
 import com.davis.hospital_Appointment_Rest_API.model.Role;
 import com.davis.hospital_Appointment_Rest_API.model.User;
+import com.davis.hospital_Appointment_Rest_API.service.imp.JwtService;
 import com.davis.hospital_Appointment_Rest_API.service.imp.RoleServiceImp;
 import com.davis.hospital_Appointment_Rest_API.service.imp.UserServiceImp;
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
@@ -31,17 +44,24 @@ public class UserController {
 
     private final UserServiceImp userServiceImp;
     private final RoleServiceImp roleServiceImp;
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     /**
      * Constructs a new UserController with required dependencies.
      * 
      * @param userServiceImp The service implementation for user operations
+     * @param roleServiceImp The service implementation for role operations
+     * @param authenticationManager The authentication manager for handling login
      */
-    public UserController(UserServiceImp userServiceImp,RoleServiceImp roleServiceImp) {
+    public UserController(UserServiceImp userServiceImp,
+                        RoleServiceImp roleServiceImp,
+                        AuthenticationManager authenticationManager,
+                        JwtService jwtService) {
         this.userServiceImp = userServiceImp;
-		this.roleServiceImp = roleServiceImp;
+        this.roleServiceImp = roleServiceImp;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
-
     /**
      * Registers a new Admin user.
      * <p>Accessible only to authenticated users with ADMIN role.</p>
@@ -138,4 +158,50 @@ public class UserController {
             
         return ResponseEntity.ok(ApiResponse.success(message, users));
     }
+    
+    /**
+     * Authenticates a user and lets the JwtGenerationFilter handle token creation.
+     * 
+     * <p>This endpoint validates credentials and upon success, the filter will
+     * intercept the response to add the JWT token.</p>
+     * 
+     * @param loginRequest A map containing "username" and "password" fields
+     * @return ResponseEntity containing:
+     *         - HTTP 200 (OK) with success message if authentication succeeds
+     *         - HTTP 401 (Unauthorized) if credentials are invalid
+     *         - HTTP 500 (Internal Server Error) for server errors
+     */
+    @PostMapping("/auth")
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            String username = loginRequest.userName();
+            String password = loginRequest.password();
+
+            // Authenticate user credentials
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+            );
+            
+            // Set authentication in security context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwtToken = jwtService.generateJwtToken(authentication);
+            
+            
+            // The JwtGenerationFilter will handle token creation
+            return ResponseEntity.ok()
+                    .header("Authorization", "Bearer " + jwtToken)  // Set in Authorization header
+
+                .body(ApiResponse.success("Authentication successful",jwtToken));
+                
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.error("Invalid username or password"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("Authentication failed: " + e.getMessage()));
+        }
+    }
 }
+
+
+

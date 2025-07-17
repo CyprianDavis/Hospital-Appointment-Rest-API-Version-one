@@ -33,15 +33,24 @@ public class JwtGenerationFilter extends OncePerRequestFilter{
             
             // Add token to response header
             response.setHeader("Authorization", "Bearer " + jwtToken);
+            System.out.print(jwtToken);
             
-            // Optionally generate refresh token if needed
-            String refreshToken = jwtService.generateRefreshToken(authentication);
-            response.setHeader("Refresh-Token", refreshToken);
+			/*
+			 * // Optionally generate refresh token if needed String refreshToken =
+			 * jwtService.generateRefreshToken(authentication);
+			 * response.setHeader("Refresh-Token", refreshToken);
+			 */
         }
         
         // Continue the filter chain
         filterChain.doFilter(request, response);
 		
 	}
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+	    // Only filter login requests
+	    return !request.getServletPath().equals("/api/users/auth");
+	}
+
 
 }

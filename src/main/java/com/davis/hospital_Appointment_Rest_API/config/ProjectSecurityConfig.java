@@ -12,55 +12,93 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+
+import com.davis.hospital_Appointment_Rest_API.filter.CsrfCookieFilter;
+import com.davis.hospital_Appointment_Rest_API.filter.JwtValidationFilter;
+import com.davis.hospital_Appointment_Rest_API.service.imp.JwtService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Security configuration class for the Hospital Appointment REST API.
- * <p>
- * Configures Spring Security settings including authentication, authorization,
- * CSRF protection, and session management. This implementation provides:
- * </p>
- * <ul>
- *   <li>Basic authentication with password encoding</li>
- *   <li>Custom exception handling for authentication and access denied scenarios</li>
- *   <li>Configurable CSRF protection (enabled by default)</li>
- *   <li>Session management policies</li>
- *   <li>Role-based authorization rules</li>
- * </ul>
+ * Central security configuration class for the Hospital Appointment REST API.
  * 
- * @author CYPRIAN DAVIS
+ * <p>This class configures Spring Security with JWT authentication, CSRF protection,
+ * and role-based authorization. Key features include:</p>
+ * 
+ * <ul>
+ *   <li>Stateless JWT-based authentication</li>
+ *   <li>Custom CSRF protection with cookie-based token repository</li>
+ *   <li>Role-based endpoint access control</li>
+ *   <li>Custom exception handling for security events</li>
+ *   <li>Password encoding with multiple algorithm support</li>
+ * </ul>
+ *
+ * <p>The configuration implements the following security workflow:</p>
+ * <ol>
+ *   <li>Public endpoints for authentication and registration</li>
+ *   <li>JWT validation for authenticated requests</li>
+ *   <li>CSRF protection for state-changing operations</li>
+ *   <li>Custom error handling for security exceptions</li>
+ * </ol>
+ *
+ * @author Cyprian Davis
  * @version 1.1
  * @since 2025-06-29
  * @see SecurityFilterChain
+ * @see AuthenticationManager
  * @see PasswordEncoder
- * @see HttpSecurity
  */
 @Configuration
 public class ProjectSecurityConfig {
     
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final JwtService jwtService;
+    private final ObjectMapper objectMapper;
+   
     
     /**
      * Constructs a new ProjectSecurityConfig with required dependencies.
      *
-     * @param authenticationEntryPoint Handles authentication exceptions
-     * @param accessDeniedHandler Handles authorization exceptions
+     * @param authenticationEntryPoint Handles authentication failures (HTTP 401)
+     * @param accessDeniedHandler Handles authorization failures (HTTP 403)
+     * @param jwtService Service for JWT token operations (generation/validation)
+     * @param objectMapper Jackson ObjectMapper for JSON processing
      */
     public ProjectSecurityConfig(CustomAuthenticationEntryPoint authenticationEntryPoint,
-                               CustomAccessDeniedHandler accessDeniedHandler) {
+                                CustomAccessDeniedHandler accessDeniedHandler,
+                                JwtService jwtService,
+                                ObjectMapper objectMapper) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
+        this.jwtService = jwtService;
+        this.objectMapper = objectMapper;
+        
     }
 
     /**
-     * Configures the security filter chain for the application.
+     * Configures the security filter chain with authentication, authorization,
+     * and protection mechanisms.
      *
-     * @param http the HttpSecurity to configure
-     * @return the configured SecurityFilterChain
-     * @throws Exception if an error occurs during configuration
+     * @param http the HttpSecurity builder to configure
+     * @return the fully configured SecurityFilterChain
+     * @throws Exception if configuration fails
+     * 
+     * @implSpec This implementation:
+     * <ul>
+     *   <li>Disables session management (stateless)</li>
+     *   <li>Configures CSRF with cookie-based token storage</li>
+     *   <li>Adds JWT validation and generation filters</li>
+     *   <li>Sets up custom exception handlers</li>
+     *   <li>Defines public and protected endpoints</li>
+     * </ul>
      */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
+    	
         http
             // Configure exception handling for authentication and authorization failures
             .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -75,50 +113,75 @@ public class ProjectSecurityConfig {
             
             // Configure session management
             .sessionManagement(session -> session
-                // For pure REST APIs, consider using STATELESS instead of ALWAYS
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             
-            // Disable CSRF protection (recommended for stateless REST APIs)
-            .csrf(csrf -> csrf.disable())
+            // CSRF configuration
+            .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+            		.ignoringRequestMatchers(
+            		    "/api/users/patient/register",
+            		    "/api/users/auth"
+            		)
+            		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+            .addFilterAfter(new CsrfCookieFilter(), UsernamePasswordAuthenticationFilter.class)
             
-            // Configure authorization rules
+            // JWT filters
+            .addFilterBefore(
+                new JwtValidationFilter(jwtService, objectMapper),
+                UsernamePasswordAuthenticationFilter.class
+            )
+				/*
+				 * .addFilterAfter( new JwtGenerationFilter(jwtService),
+				 * UsernamePasswordAuthenticationFilter.class )
+				 */
+            
+            // Authorization rules
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
                 .requestMatchers(
-                    "/api/users/patient/register"  // Allow patient registration without auth
+                    "/api/users/patient/register",
+                    "/api/users/auth"
                 ).permitAll()
-                // All other endpoints require authentication
                 .anyRequest().authenticated()
             )
             
-            // Enable HTTP Basic authentication
+            // Basic auth fallback
             .httpBasic(withDefaults());
         
         return http.build();
     }
      
     /**
-     * Creates a password encoder bean that supports multiple encoding formats.
-     * Uses Spring Security's delegating password encoder which can handle
-     * multiple password encoding algorithms with prefix identifiers (e.g., {bcrypt}).
+     * Creates a delegating password encoder that supports multiple encoding formats.
+     * 
+     * <p>The encoder will automatically detect the encoding algorithm from the password prefix
+     * (e.g., {bcrypt}, {pbkdf2}, {sha256}) and use the appropriate encoder.</p>
      *
-     * @return the configured PasswordEncoder
+     * @return PasswordEncoder that supports multiple encoding schemes
+     * 
+     * @see PasswordEncoderFactories#createDelegatingPasswordEncoder()
      */
     @Bean
     PasswordEncoder passwordEncoder() {
-        // Creates a delegating encoder that supports multiple encoding formats
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
+    /**
+     * Configures the authentication manager with custom provider.
+     * 
+     * @param userDetailsService service for loading user details
+     * @param passwordEncoder encoder for password verification
+     * @return configured AuthenticationManager instance
+     * 
+     * @implNote The manager is configured to retain credentials after authentication
+     *           to support subsequent authentication attempts if needed.
+     */
     @Bean
     AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-    		PasswordEncoder passwordEncoder) {
-    	UserNamePwdAuthenticationProvider authenticationProvider =
-    			new UserNamePwdAuthenticationProvider(userDetailsService, passwordEncoder);
-    	  ProviderManager providerManager = new ProviderManager(authenticationProvider);
-          providerManager.setEraseCredentialsAfterAuthentication(false);
-		  return providerManager;
-    	
-    	
+            PasswordEncoder passwordEncoder) {
+        UserNamePwdAuthenticationProvider authenticationProvider =
+                new UserNamePwdAuthenticationProvider(userDetailsService, passwordEncoder);
+        ProviderManager providerManager = new ProviderManager(authenticationProvider);
+        providerManager.setEraseCredentialsAfterAuthentication(false);
+        return providerManager;
     }
 }

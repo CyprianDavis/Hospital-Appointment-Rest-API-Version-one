@@ -52,9 +52,13 @@ public class UserNamePwdAuthenticationProvider implements AuthenticationProvider
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // Extract username from authentication request
         String userName = authentication.getName();
-        
+        Object credentials = authentication.getCredentials();
+        if (credentials == null) {
+            throw new BadCredentialsException("No credentials provided");
+        }
         // Extract raw password from authentication request
         String password = authentication.getCredentials().toString();
+        
         
         // Load user details from the database using the username
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
