@@ -1,5 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.dto;
 
+import java.time.LocalDate;
+
 public class PatientDto {
 	private String userName;
 	private String surName;
@@ -9,6 +11,9 @@ public class PatientDto {
 	private String contact;
 	private String email;
 	private String postalCode;
+	private String gender;
+	private LocalDate dateOfBirth;
+	
 	/**
 	 * @param userName
 	 * @param surName
@@ -18,9 +23,12 @@ public class PatientDto {
 	 * @param contact
 	 * @param email
 	 * @param postalCode
+	 * @param gender
+	 * @param dateOfBirth
 	 */
 	public PatientDto(String userName, String surName, String givenName, String otherName, String bloodGroup,
-			String contact, String email, String postalCode) {
+			String contact, String email, String postalCode, String gender, LocalDate dateOfBirth) {
+		super();
 		this.userName = userName;
 		this.surName = surName;
 		this.givenName = givenName;
@@ -29,6 +37,8 @@ public class PatientDto {
 		this.contact = contact;
 		this.email = email;
 		this.postalCode = postalCode;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
 	}
 	/**
 	 * @return the userName
@@ -125,6 +135,30 @@ public class PatientDto {
 	 */
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
+	}
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	/**
+	 * @return the dateOfBirth
+	 */
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+	/**
+	 * @param dateOfBirth the dateOfBirth to set
+	 */
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 	
 	

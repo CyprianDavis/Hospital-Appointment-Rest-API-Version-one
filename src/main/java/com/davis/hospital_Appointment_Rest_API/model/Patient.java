@@ -1,5 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -79,7 +80,7 @@ public class Patient extends User {
      * @see #getDateOfBirth()
      * @see #setDateOfBirth(String)
      */
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     
     /**
      * The collection of all appointments booked by this patient.
@@ -353,7 +354,7 @@ public class Patient extends User {
      * 
      * @return The date of birth in ISO format (YYYY-MM-DD)
      */
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -362,7 +363,7 @@ public class Patient extends User {
      * 
      * @param dateOfBirth The date of birth in ISO format (YYYY-MM-DD)
      */
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 }
