@@ -5,6 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
@@ -85,7 +86,7 @@ public class Patient extends User {
      * 
      * @see Appointment
      */
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private Set<Appointment> appointments = new HashSet<>();
     /**
      * The set of medical records associated with this patient.
@@ -97,7 +98,7 @@ public class Patient extends User {
      * 
      * @see MedicalRecord#patient
      */
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private Set<MedicalRecord> medicalRecords = new HashSet<>();
     /**
      * The collection of prescriptions associated with this patient.
@@ -111,7 +112,7 @@ public class Patient extends User {
      * 
      * @see Prescription#patient
      */
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient",fetch = FetchType.LAZY)
     private Set<Prescription> prescriptions;
     /**
      * The collection of billing records associated with this patient.
@@ -125,7 +126,7 @@ public class Patient extends User {
      * 
      * @see Billing#patient
      */
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private Set<Billing> billings;
     
     /**
