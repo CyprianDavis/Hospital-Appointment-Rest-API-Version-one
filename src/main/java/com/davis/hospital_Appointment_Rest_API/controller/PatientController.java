@@ -22,7 +22,7 @@ import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
  * @author CYPRIAN DAVIS
  */
 @RestController
-@RequestMapping("/api/patient")
+@RequestMapping("/api/patients")
 public class PatientController {
     private final PatientServiceImp patientServiceImp;
     

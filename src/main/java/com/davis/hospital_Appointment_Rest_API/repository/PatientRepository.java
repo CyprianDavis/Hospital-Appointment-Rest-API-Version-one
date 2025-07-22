@@ -45,15 +45,13 @@ public interface PatientRepository extends JpaRepository<Patient, String> {
      * @param nameTerm The search term to match against patient names
      * @return List of PatientDto objects containing matching patients
      */
-    @Query("SELECT new com.davis.hospital_Appointment_Rest_API.dto.PatientDto(" +
-           "p.userName, " +
-           "CONCAT(p.surName, ' ', p.givenName, " +
-           "p.otherName), " +
-           "p.bloodGroup, p.contact, p.email, p.postalCode, p.gender, p.dateOfBirth) " +
-           "FROM Patient p WHERE " +
-           "LOWER(p.surName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
-           "LOWER(p.givenName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
-           "LOWER(p.otherName) LIKE LOWER(CONCAT('%', :nameTerm, '%'))")
+	@Query("SELECT new com.davis.hospital_Appointment_Rest_API.dto.PatientDto(" +
+		       "p.userName, " +
+		       "CONCAT(p.surName, ' ', p.givenName, COALESCE(CONCAT(' ', p.otherName), '')), " +
+		       "p.bloodGroup, p.contact, p.email, p.postalCode, p.gender, p.dateOfBirth) " +
+		       "FROM Patient p WHERE " +
+		       "LOWER(CONCAT(p.surName, ' ', p.givenName, COALESCE(CONCAT(' ', p.otherName), ''))) " +
+		       "LIKE LOWER(CONCAT('%', :nameTerm, '%'))")
     List<PatientDto> searchPatientByName(@Param("nameTerm") String nameTerm);
 
     /**
@@ -66,11 +64,11 @@ public interface PatientRepository extends JpaRepository<Patient, String> {
      * @return List of PatientDto objects for all patients
      */
     @Query("SELECT new com.davis.hospital_Appointment_Rest_API.dto.PatientDto(" +
-           "p.userName, " +
-           "CONCAT(p.surName, ' ', p.givenName, " +
-           "p.otherName), " +
-           "p.bloodGroup, p.contact, p.email, p.postalCode, p.gender, p.dateOfBirth) " +
-           "FROM Patient p")
+    	       "p.userName, " +
+    	       "CONCAT(p.surName, ' ', p.givenName, " +
+    	       "COALESCE(CONCAT(' ', p.otherName), '')) ," +  // Handles null otherName
+    	       "p.bloodGroup, p.contact, p.email, p.postalCode, p.gender, p.dateOfBirth) " +
+    	       "FROM Patient p")
     List<PatientDto> findAllPatients();
     
     /**
