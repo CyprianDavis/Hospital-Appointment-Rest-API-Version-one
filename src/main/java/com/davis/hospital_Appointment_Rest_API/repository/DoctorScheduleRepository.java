@@ -87,7 +87,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
            "WHERE d.dayOfWeek = :dayOfWeek")
     List<ViewDoctorSchedule> findDtoByDayOfWeek(@Param("dayOfWeek") String dayOfWeek);
     /**
-     * Finds available doctor schedules by specialization and date, returning DTO projections.
+     * Finds available doctor schedules by specialization and date, returning entities.
      * <p>
      * Converts the provided date to day of week and matches against schedules
      * with available slots and confirmed status.
@@ -95,24 +95,14 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      * 
      * @param specialization The medical specialization to filter by
      * @param date The date to check availability for (converted to day of week)
-     * @return List of matching doctor schedule DTOs with available slots
+     * @return List of matching doctor schedule entities with available slots
      */
-    @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
-           "d.id, " +
-           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
-           "d.doctor.specialization, " +
-           "d.dayOfWeek, " +
-           "d.startTime, " +
-           "d.endTime, " +
-           "d.availableSlots, " +
-           "d.isConfirmed) " +
-           "FROM DoctorSchedule d " +
+    @Query("SELECT d FROM DoctorSchedule d " +
            "WHERE d.doctor.specialization = :specialization " +
            "AND d.dayOfWeek = FUNCTION('FORMATDATEPART', :date, 'dddd') " +
            "AND d.availableSlots > 0 " +
-           "AND d.isConfirmed = true " +
-           "AND :date >= CURRENT_DATE")
-    List<ViewDoctorSchedule> findDtoBySpecializationAndDate(
+           "AND d.isConfirmed = true ")
+    List<DoctorSchedule> findBySpecializationAndDate(
         @Param("specialization") String specialization,
         @Param("date") LocalDate date);
 }
