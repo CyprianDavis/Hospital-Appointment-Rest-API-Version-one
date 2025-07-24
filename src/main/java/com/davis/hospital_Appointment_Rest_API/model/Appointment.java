@@ -67,9 +67,9 @@ public class Appointment {
 
 	/* *//**
 			 * The scheduled start time of the appointment
-			 *//*
-				 * private LocalTime startTime;
-				 */
+			 */
+	private LocalTime startTime;
+				 
 
 	/**
 	 * The scheduled end time of the appointment
@@ -217,7 +217,20 @@ public class Appointment {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	
 
+	/**
+	 * @return the startTime
+	 */
+	public LocalTime getStartTime() {
+		return startTime;
+	}
+	/**
+	 * @param startTime the startTime to set
+	 */
+	public void setStartTime(LocalTime startTime) {
+		this.startTime = startTime;
+	}
 	/**
 	 * Gets the scheduled end time.
 	 * 
