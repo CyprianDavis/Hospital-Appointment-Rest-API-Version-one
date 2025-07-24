@@ -2,6 +2,7 @@ package com.davis.hospital_Appointment_Rest_API.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule;
 import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
@@ -69,5 +70,5 @@ public interface DoctorScheduleService extends Service<DoctorSchedule> {
      *           <li>date is in the past</li>
      *         </ul>
      */
-    List<DoctorSchedule> findBySpecializationAndDate(String specialization, LocalDate date);
+    Optional<DoctorSchedule> findBySpecializationAndDate(String specialization, LocalDate date);
 }

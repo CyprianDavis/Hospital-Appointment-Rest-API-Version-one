@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,39 +178,34 @@ public class DoctorScheduleServiceImp implements DoctorScheduleService {
     }
 
     /**
-     * Retrieves available doctor schedules matching the specified medical specialization and date.
+     * Retrieves the first available doctor schedule matching the specified medical specialization and date.
      * <p>
      * This method performs the following operations:
      * <ol>
-     *   
+     *   <li>Validates input parameters are not null</li>
      *   <li>Converts the provided date to the corresponding day of week</li>
-     *   <li>Queries for schedules matching both the specialization and day of week</li>
-     *   <li>Filters results to only include confirmed schedules with available slots</li>
-     *   <li>Excludes schedules for past dates</li>
+     *   <li>Queries for the first schedule matching both the specialization and day of week</li>
+     *   <li>Returns only if the schedule has available slots and is confirmed</li>
      * </ol>
+     * The database query is optimized with LIMIT 1 to return immediately when the first match is found.
      * </p>
      *
      * @param specialization the medical specialization to search for (e.g., "Cardiology", "Pediatrics")
      *        Must not be {@code null} or empty
      * @param date the date to check availability for. Must be today or a future date
      *        Must not be {@code null}
-     * @return a {@code List<DoctorSchedule>} containing matching schedules with available slots,
-     *         ordered by earliest available time. Returns empty list if no matches found
+     * @return an {@link Optional} containing the first available {@link DoctorSchedule} if found,
+     *         or empty Optional if no availability exists
      * @throws IllegalArgumentException if:
      *         <ul>
      *           <li>{@code specialization} is {@code null} or empty</li>
      *           <li>{@code date} is {@code null}</li>
      *           <li>{@code date} is in the past</li>
      *         </ul>
-     * @see DoctorScheduleRepository#findBySpecializationAndDate(String, LocalDate)
+     * @see DoctorScheduleRepository#findFirstAvailableBySpecializationAndDate(String, LocalDate)
      */
     @Override
-    public List<DoctorSchedule> findBySpecializationAndDate(String specialization, LocalDate date) {
-       
-        
-        return doctorScheduleRepository.findBySpecializationAndDate(specialization, date)
-                .stream()
-                .sorted(Comparator.comparing(DoctorSchedule::getStartTime))
-                .collect(Collectors.toList());
+    public Optional<DoctorSchedule> findBySpecializationAndDate(String specialization, LocalDate date) {
+        return doctorScheduleRepository.findFirstAvailableBySpecializationAndDate(specialization, date);
     }
 }

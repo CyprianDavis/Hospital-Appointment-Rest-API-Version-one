@@ -2,6 +2,7 @@ package com.davis.hospital_Appointment_Rest_API.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -87,22 +88,36 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
            "WHERE d.dayOfWeek = :dayOfWeek")
     List<ViewDoctorSchedule> findDtoByDayOfWeek(@Param("dayOfWeek") String dayOfWeek);
     /**
-     * Finds available doctor schedules by specialization and date, returning entities.
+     * Repository method to find the first available doctor schedule matching the given specialization and date.
      * <p>
-     * Converts the provided date to day of week and matches against schedules
-     * with available slots and confirmed status.
+     * This query:
+     * <ul>
+     *   <li>Filters by medical specialization (case-sensitive exact match)</li>
+     *   <li>Matches the day of week derived from the provided date</li>
+     *   <li>Only returns schedules with available slots (>0)</li>
+     *   <li>Only returns confirmed schedules (isConfirmed=true)</li>
+     *   <li>Limits results to 1 record for maximum efficiency</li>
+     * </ul>
      * </p>
      * 
-     * @param specialization The medical specialization to filter by
-     * @param date The date to check availability for (converted to day of week)
-     * @return List of matching doctor schedule entities with available slots
+     * @param specialization The medical specialization to search for (e.g., "Cardiology")
+     *        Must not be {@code null} or empty
+     * @param date The appointment date to check availability for
+     *        Must not be {@code null} and should be >= current date
+     * @return An {@link Optional} containing the first matching {@link DoctorSchedule} if found,
+     *         or empty Optional if no availability exists
+     * @throws IllegalArgumentException If specialization is null/empty or date is null
+     * 
+     * @see DoctorSchedule
      */
-    @Query("SELECT d FROM DoctorSchedule d " +
+    @Query(value = "SELECT d FROM DoctorSchedule d " +
            "WHERE d.doctor.specialization = :specialization " +
            "AND d.dayOfWeek = FUNCTION('FORMATDATEPART', :date, 'dddd') " +
            "AND d.availableSlots > 0 " +
-           "AND d.isConfirmed = true ")
-    List<DoctorSchedule> findBySpecializationAndDate(
+           "AND d.isConfirmed = true " +
+           "LIMIT 1",
+           nativeQuery = true)
+    Optional<DoctorSchedule> findFirstAvailableBySpecializationAndDate(
         @Param("specialization") String specialization,
         @Param("date") LocalDate date);
 }
