@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -43,8 +41,8 @@ public class Appointment {
 	 * Unique identifier for the appointment
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	
+	private String id;
 
 	/**
 	 * The doctor assigned to this appointment
@@ -151,7 +149,7 @@ public class Appointment {
 	 * 
 	 * @return The appointment ID
 	 */
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -160,7 +158,7 @@ public class Appointment {
 	 * 
 	 * @param id The ID to set
 	 */
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
