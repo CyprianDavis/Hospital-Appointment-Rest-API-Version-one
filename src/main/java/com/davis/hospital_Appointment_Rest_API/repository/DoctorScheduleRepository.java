@@ -1,5 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,7 +56,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      * @return list of schedule DTOs matching the name criteria
      */
     @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
-           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName,COALESCE(CONCAT(' ', p.otherName), '')), " +
            "d.doctor.specialization,"+
            "d.dayOfWeek, " +
            "d.startTime, " +
@@ -63,8 +64,9 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
            "d.availableSlots, " +
            "d.isConfirmed) " +
            "FROM DoctorSchedule d WHERE " +
-           "LOWER(d.doctor.surName) LIKE LOWER(CONCAT('%', :nameTerm, '%')) OR " +
-           "LOWER(d.doctor.givenName) LIKE LOWER(CONCAT('%', :nameTerm, '%'))")
+           "LOWER(CONCAT(d.surName, ' ', d.givenName, COALESCE(CONCAT(' ', d.otherName), ''))) " +
+	       "LIKE LOWER(CONCAT('%', :nameTerm, '%'))"
+          )
     List<ViewDoctorSchedule> searchDtoByDoctorName(@Param("nameTerm") String nameTerm);
     
     /**
@@ -84,4 +86,33 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
            "FROM DoctorSchedule d " +
            "WHERE d.dayOfWeek = :dayOfWeek")
     List<ViewDoctorSchedule> findDtoByDayOfWeek(@Param("dayOfWeek") String dayOfWeek);
+    /**
+     * Finds available doctor schedules by specialization and date, returning DTO projections.
+     * <p>
+     * Converts the provided date to day of week and matches against schedules
+     * with available slots and confirmed status.
+     * </p>
+     * 
+     * @param specialization The medical specialization to filter by
+     * @param date The date to check availability for (converted to day of week)
+     * @return List of matching doctor schedule DTOs with available slots
+     */
+    @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
+           "d.id, " +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "d.doctor.specialization, " +
+           "d.dayOfWeek, " +
+           "d.startTime, " +
+           "d.endTime, " +
+           "d.availableSlots, " +
+           "d.isConfirmed) " +
+           "FROM DoctorSchedule d " +
+           "WHERE d.doctor.specialization = :specialization " +
+           "AND d.dayOfWeek = FUNCTION('FORMATDATEPART', :date, 'dddd') " +
+           "AND d.availableSlots > 0 " +
+           "AND d.isConfirmed = true " +
+           "AND :date >= CURRENT_DATE")
+    List<ViewDoctorSchedule> findDtoBySpecializationAndDate(
+        @Param("specialization") String specialization,
+        @Param("date") LocalDate date);
 }

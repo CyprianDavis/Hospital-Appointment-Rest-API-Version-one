@@ -95,4 +95,5 @@ public interface DoctorRepository extends JpaRepository<Doctor, String> {
            "LOWER(d.givenName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
            "LOWER(d.otherName) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<ViewDoctor> searchByName(@Param("name") String name);
+    
 }
