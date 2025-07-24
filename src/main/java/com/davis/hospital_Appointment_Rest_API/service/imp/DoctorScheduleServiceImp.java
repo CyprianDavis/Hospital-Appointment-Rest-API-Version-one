@@ -1,6 +1,7 @@
 package com.davis.hospital_Appointment_Rest_API.service.imp;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
@@ -173,5 +174,42 @@ public class DoctorScheduleServiceImp implements DoctorScheduleService {
             return 15;
         }
         return 0;
+    }
+
+    /**
+     * Retrieves available doctor schedules matching the specified medical specialization and date.
+     * <p>
+     * This method performs the following operations:
+     * <ol>
+     *   
+     *   <li>Converts the provided date to the corresponding day of week</li>
+     *   <li>Queries for schedules matching both the specialization and day of week</li>
+     *   <li>Filters results to only include confirmed schedules with available slots</li>
+     *   <li>Excludes schedules for past dates</li>
+     * </ol>
+     * </p>
+     *
+     * @param specialization the medical specialization to search for (e.g., "Cardiology", "Pediatrics")
+     *        Must not be {@code null} or empty
+     * @param date the date to check availability for. Must be today or a future date
+     *        Must not be {@code null}
+     * @return a {@code List<DoctorSchedule>} containing matching schedules with available slots,
+     *         ordered by earliest available time. Returns empty list if no matches found
+     * @throws IllegalArgumentException if:
+     *         <ul>
+     *           <li>{@code specialization} is {@code null} or empty</li>
+     *           <li>{@code date} is {@code null}</li>
+     *           <li>{@code date} is in the past</li>
+     *         </ul>
+     * @see DoctorScheduleRepository#findBySpecializationAndDate(String, LocalDate)
+     */
+    @Override
+    public List<DoctorSchedule> findBySpecializationAndDate(String specialization, LocalDate date) {
+       
+        
+        return doctorScheduleRepository.findBySpecializationAndDate(specialization, date)
+                .stream()
+                .sorted(Comparator.comparing(DoctorSchedule::getStartTime))
+                .collect(Collectors.toList());
     }
 }

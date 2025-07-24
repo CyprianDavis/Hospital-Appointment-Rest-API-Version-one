@@ -1,5 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import com.davis.hospital_Appointment_Rest_API.service.imp.AppointmentServiceImp
 import com.davis.hospital_Appointment_Rest_API.service.imp.DoctorServiceImp;
 import com.davis.hospital_Appointment_Rest_API.service.imp.PatientServiceImp;
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
+import com.davis.hospital_Appointment_Rest_API.utils.AppointmentRequest;
 
 /**
  * REST Controller for managing appointments.
@@ -45,9 +47,8 @@ import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
 public class AppointmentController {
     
     private final AppointmentServiceImp appointmentServiceImp;
-    private final DoctorServiceImp doctorServiceImp;
-    private final PatientServiceImp patientServiceImp;
-
+    
+ 
     /**
      * Constructs a new AppointmentController with required services.
      * 
@@ -59,8 +60,7 @@ public class AppointmentController {
                                DoctorServiceImp doctorServiceImp,
                                PatientServiceImp patientServiceImp) {
         this.appointmentServiceImp = appointmentServiceImp;
-        this.doctorServiceImp = doctorServiceImp;
-        this.patientServiceImp = patientServiceImp;
+       
     }
 
     /**
@@ -117,17 +117,21 @@ public class AppointmentController {
      */
     @PostMapping("/{doctorId}/{patientId}")
     public ResponseEntity<?> bookAppointment(
-        @PathVariable String doctorId,
-        @PathVariable String patientId) {
+        @PathVariable AppointmentRequest appointmentRequest) {
         
         try {
-            if (doctorId == null || doctorId.isEmpty() || patientId == null || patientId.isEmpty()) {
+            if (appointmentRequest.patientId().isEmpty()||appointmentRequest.doctorSpecialty().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(false, "Both doctorId and patientId are required and must not be empty"));
+                    .body(new ApiResponse<>(false, "Incomplete Request "));
+            }
+            if(appointmentRequest.preferredDate().isBefore(LocalDate.now())) {
+            	 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                         .body(new ApiResponse<>(false, "Appointment date cannot be in the past"));
+            	
             }
 
-            Optional<Doctor> doctor = doctorServiceImp.findById(doctorId);
-            Optional<Patient> patient = patientServiceImp.findById(patientId);
+           
+            Optional<Patient> patient = patientServiceImp.findById(appointmentRequest.patientId());
             
             if (doctor.isEmpty() || patient.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
