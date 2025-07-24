@@ -1,10 +1,12 @@
 package com.davis.hospital_Appointment_Rest_API.model;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
@@ -23,6 +25,8 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
  *   <li>Patient medical identifier</li>
  *   <li>Full name components (surname, given name, other names)</li>
  *   <li>Blood group information</li>
+ *   <li>Demographic information (gender, date of birth)</li>
+ *   <li>Associated medical records, appointments, prescriptions, and billings</li>
  * </ul>
  * </p>
  * 
@@ -35,7 +39,6 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 @DiscriminatorValue("PATIENT")
 @PrimaryKeyJoinColumn(name = "userId") // Links to users.id
 public class Patient extends User {
-    
     
     /** 
      * Patient's surname/family name 
@@ -64,6 +67,21 @@ public class Patient extends User {
      * @see #setBloodGroup(String)
      */
     private String bloodGroup;
+    
+    /**
+     * Patient's gender (typically "Male", "Female", or other gender identities)
+     * @see #getGender()
+     * @see #setGender(String)
+     */
+    private String gender;
+    
+    /**
+     * Patient's date of birth in ISO format (YYYY-MM-DD)
+     * @see #getDateOfBirth()
+     * @see #setDateOfBirth(String)
+     */
+    private LocalDate dateOfBirth;
+    
     /**
      * The collection of all appointments booked by this patient.
      * <p>
@@ -85,20 +103,22 @@ public class Patient extends User {
      * 
      * @see Appointment
      */
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private Set<Appointment> appointments = new HashSet<>();
+    
     /**
      * The set of medical records associated with this patient.
      * This is the inverse side of the bidirectional relationship with {@link MedicalRecord}.
      * Each medical record in this set references this patient through its {@code patient} field.
      * 
-     * The relationship is mapped by the {@code patient} field in the {@link MedicalRecord} entity,
-     * indicating that the foreign key is maintained on the MedicalRecord table.
+     * <p>The relationship is mapped by the {@code patient} field in the {@link MedicalRecord} entity,
+     * indicating that the foreign key is maintained on the MedicalRecord table.</p>
      * 
      * @see MedicalRecord#patient
      */
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private Set<MedicalRecord> medicalRecords = new HashSet<>();
+    
     /**
      * The collection of prescriptions associated with this patient.
      * This represents the inverse side of the bidirectional relationship with {@link Prescription}.
@@ -111,8 +131,9 @@ public class Patient extends User {
      * 
      * @see Prescription#patient
      */
-    @OneToMany(mappedBy = "patient")
-    private Set<Prescription> prescriptions;
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    private Set<Prescription> prescriptions = new HashSet<>();
+    
     /**
      * The collection of billing records associated with this patient.
      * This represents the inverse side of the bidirectional relationship with {@link Billing}.
@@ -125,8 +146,8 @@ public class Patient extends User {
      * 
      * @see Billing#patient
      */
-    @OneToMany(mappedBy = "patient")
-    private Set<Billing> billings;
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    private Set<Billing> billings = new HashSet<>();
     
     /**
      * Constructs a new Patient with complete details.
@@ -137,14 +158,13 @@ public class Patient extends User {
      * @param district User's district/locality
      * @param street Street address component
      * @param postalCode Postal code for mail
-     * @param patientId Unique medical identifier
      * @param surName Patient's surname/family name
      * @param givenName Patient's given/first name
      * @param otherName Patient's middle name(s) (optional)
      * @param bloodGroup Patient's blood group
      */
     public Patient(String userName, String passWord, String contact, String district, String street, String postalCode,
-            String patientId, String surName, String givenName, String otherName, String bloodGroup) {
+            String surName, String givenName, String otherName, String bloodGroup) {
         super(userName, passWord, contact, district, street, postalCode);
         this.surName = surName;
         this.givenName = givenName;
@@ -152,140 +172,198 @@ public class Patient extends User {
         this.bloodGroup = bloodGroup;
     }
 
-    public Patient() {}
     /**
-     * Gets the patient's surname/family name
-     * @return The surname
+     * Default no-argument constructor required by JPA.
+     */
+    public Patient() {
+        // JPA requires an empty constructor
+    }
+
+    /**
+     * Gets the patient's surname/family name.
+     * 
+     * @return The surname as a String
      */
     public String getSurName() {
         return surName;
     }
 
     /**
-     * Sets the patient's surname/family name
-     * @param surName The surname to set
+     * Sets the patient's surname/family name.
+     * 
+     * @param surName The surname to set (non-null)
      */
     public void setSurName(String surName) {
         this.surName = surName;
     }
 
     /**
-     * Gets the patient's given/first name
-     * @return The given name
+     * Gets the patient's given/first name.
+     * 
+     * @return The given name as a String
      */
     public String getGivenName() {
         return givenName;
     }
 
     /**
-     * Sets the patient's given/first name
-     * @param givenName The given name to set
+     * Sets the patient's given/first name.
+     * 
+     * @param givenName The given name to set (non-null)
      */
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
 
     /**
-     * Gets the patient's middle name(s)
-     * @return Middle name(s) or null if not provided
+     * Gets the patient's middle name(s).
+     * 
+     * @return Middle name(s) as a String, or null if not provided
      */
     public String getOtherName() {
         return otherName;
     }
 
     /**
-     * Sets the patient's middle name(s)
-     * @param otherName Middle name(s) (optional)
+     * Sets the patient's middle name(s).
+     * 
+     * @param otherName Middle name(s) (optional, may be null)
      */
     public void setOtherName(String otherName) {
         this.otherName = otherName;
     }
 
     /**
-     * Gets the patient's blood group
-     * @return The blood group (e.g., "A+", "O-")
+     * Gets the patient's blood group.
+     * 
+     * @return The blood group as a String (e.g., "A+", "O-")
      */
     public String getBloodGroup() {
         return bloodGroup;
     }
 
     /**
-     * Sets the patient's blood group
-     * @param bloodGroup The blood group to set
+     * Sets the patient's blood group.
+     * 
+     * @param bloodGroup The blood group to set (standard format recommended)
      */
     public void setBloodGroup(String bloodGroup) {
         this.bloodGroup = bloodGroup;
     }
 
-	/**
-	 * @return the appointmets
-	 */
-	public Set<Appointment> getAppointmets() {
-		return appointments;
-	}
+    /**
+     * Gets all appointments associated with this patient.
+     * 
+     * @return A Set of Appointment entities
+     * @see Appointment
+     */
+    public Set<Appointment> getAppointments() {
+        return appointments;
+    }
 
-	/**
-	 * @param appointmets the appointmets to set
-	 */
-	public void setAppointmets(Set<Appointment> appointmets) {
-		this.appointments = appointmets;
-	}
+    /**
+     * Sets the appointments for this patient.
+     * 
+     * @param appointments The Set of Appointment entities to associate
+     * @see Appointment
+     */
+    public void setAppointments(Set<Appointment> appointments) {
+        this.appointments = appointments;
+    }
 
-	/**
-	 * @return the appointments
-	 */
-	public Set<Appointment> getAppointments() {
-		return appointments;
-	}
+    /**
+     * Gets all medical records associated with this patient.
+     * 
+     * @return A Set of MedicalRecord entities
+     * @see MedicalRecord
+     */
+    public Set<MedicalRecord> getMedicalRecords() {
+        return medicalRecords;
+    }
 
-	/**
-	 * @param appointments the appointments to set
-	 */
-	public void setAppointments(Set<Appointment> appointments) {
-		this.appointments = appointments;
-	}
+    /**
+     * Sets the medical records for this patient.
+     * 
+     * @param medicalRecords The Set of MedicalRecord entities to associate
+     * @see MedicalRecord
+     */
+    public void setMedicalRecords(Set<MedicalRecord> medicalRecords) {
+        this.medicalRecords = medicalRecords;
+    }
 
-	/**
-	 * @return the medicalRecords
-	 */
-	public Set<MedicalRecord> getMedicalRecords() {
-		return medicalRecords;
-	}
+    /**
+     * Gets all prescriptions associated with this patient.
+     * 
+     * @return A Set of Prescription entities
+     * @see Prescription
+     */
+    public Set<Prescription> getPrescriptions() {
+        return prescriptions;
+    }
 
-	/**
-	 * @param medicalRecords the medicalRecords to set
-	 */
-	public void setMedicalRecords(Set<MedicalRecord> medicalRecords) {
-		this.medicalRecords = medicalRecords;
-	}
+    /**
+     * Sets the prescriptions for this patient.
+     * 
+     * @param prescriptions The Set of Prescription entities to associate
+     * @see Prescription
+     */
+    public void setPrescriptions(Set<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
 
-	/**
-	 * @return the prescriptions
-	 */
-	public Set<Prescription> getPrescriptions() {
-		return prescriptions;
-	}
+    /**
+     * Gets all billing records associated with this patient.
+     * 
+     * @return A Set of Billing entities
+     * @see Billing
+     */
+    public Set<Billing> getBillings() {
+        return billings;
+    }
 
-	/**
-	 * @param prescriptions the prescriptions to set
-	 */
-	public void setPrescriptions(Set<Prescription> prescriptions) {
-		this.prescriptions = prescriptions;
-	}
+    /**
+     * Sets the billing records for this patient.
+     * 
+     * @param billings The Set of Billing entities to associate
+     * @see Billing
+     */
+    public void setBillings(Set<Billing> billings) {
+        this.billings = billings;
+    }
 
-	/**
-	 * @return the billings
-	 */
-	public Set<Billing> getBillings() {
-		return billings;
-	}
+    /**
+     * Gets the patient's gender.
+     * 
+     * @return The gender as a String
+     */
+    public String getGender() {
+        return gender;
+    }
 
-	/**
-	 * @param billings the billings to set
-	 */
-	public void setBillings(Set<Billing> billings) {
-		this.billings = billings;
-	}
-	
-    
+    /**
+     * Sets the patient's gender.
+     * 
+     * @param gender The gender to set (e.g., "Male", "Female")
+     */
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    /**
+     * Gets the patient's date of birth.
+     * 
+     * @return The date of birth in ISO format (YYYY-MM-DD)
+     */
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    /**
+     * Sets the patient's date of birth.
+     * 
+     * @param dateOfBirth The date of birth in ISO format (YYYY-MM-DD)
+     */
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
 }
