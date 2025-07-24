@@ -1,5 +1,6 @@
 package com.davis.hospital_Appointment_Rest_API.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule;
@@ -10,7 +11,7 @@ import com.davis.hospital_Appointment_Rest_API.model.DoctorSchedule;
  * Extends the generic {@link Service} interface with doctor schedule-specific operations.
  * 
  * <p>Provides methods for searching and managing doctor schedules by various criteria
- * including specialization, name, and day of week.</p>
+ * including specialization, name, day of week, and date.</p>
  *
  * @author CYPRIAN DAVIS
  * @since 1.0
@@ -29,7 +30,6 @@ public interface DoctorScheduleService extends Service<DoctorSchedule> {
      */
     List<ViewDoctorSchedule> findByDoctorSpecialization(String specialization);
 
-    
     /**
      * Searches for doctor schedules by the doctor's name.
      *
@@ -49,4 +49,25 @@ public interface DoctorScheduleService extends Service<DoctorSchedule> {
      * @throws IllegalArgumentException if day is null, empty, or not a valid day name
      */
     List<ViewDoctorSchedule> findByDayOfWeek(String day);
+
+    /**
+     * Finds available doctor schedules by medical specialization and specific date.
+     * <p>
+     * Returns schedules that match both the specified medical specialization and are available
+     * on the given date (converted to day of week). Only returns schedules with available slots
+     * and confirmed availability status.
+     * </p>
+     *
+     * @param specialization the medical specialization to filter by (e.g., "Cardiology")
+     * @param date the date to check availability for (must be current or future date)
+     * @return list of matching doctor schedule entities with available slots,
+     *         ordered by earliest available time. Returns empty list if no matches found
+     * @throws IllegalArgumentException if:
+     *         <ul>
+     *           <li>specialization is null or empty</li>
+     *           <li>date is null</li>
+     *           <li>date is in the past</li>
+     *         </ul>
+     */
+    List<DoctorSchedule> findBySpecializationAndDate(String specialization, LocalDate date);
 }
