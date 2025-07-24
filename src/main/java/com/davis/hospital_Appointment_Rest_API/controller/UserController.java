@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.davis.hospital_Appointment_Rest_API.model.Admin;
 import com.davis.hospital_Appointment_Rest_API.model.Doctor;
-import com.davis.hospital_Appointment_Rest_API.model.LoginRequest;
 import com.davis.hospital_Appointment_Rest_API.model.Patient;
 import com.davis.hospital_Appointment_Rest_API.model.Role;
 import com.davis.hospital_Appointment_Rest_API.model.User;
@@ -26,6 +25,7 @@ import com.davis.hospital_Appointment_Rest_API.service.imp.JwtService;
 import com.davis.hospital_Appointment_Rest_API.service.imp.RoleServiceImp;
 import com.davis.hospital_Appointment_Rest_API.service.imp.UserServiceImp;
 import com.davis.hospital_Appointment_Rest_API.utils.ApiResponse;
+import com.davis.hospital_Appointment_Rest_API.utils.LoginRequest;
 
 /**
  * REST controller for managing user operations in the Hospital Appointment System.
