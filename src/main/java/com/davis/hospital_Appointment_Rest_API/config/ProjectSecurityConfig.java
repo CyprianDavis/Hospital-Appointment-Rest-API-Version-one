@@ -13,10 +13,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
-import com.davis.hospital_Appointment_Rest_API.filter.CsrfCookieFilter;
 import com.davis.hospital_Appointment_Rest_API.filter.JwtValidationFilter;
 import com.davis.hospital_Appointment_Rest_API.service.imp.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,8 +94,6 @@ public class ProjectSecurityConfig {
      */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
-    	
         http
             // Configure exception handling for authentication and authorization failures
             .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -116,25 +111,15 @@ public class ProjectSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             
-            // CSRF configuration
-            .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-            		.ignoringRequestMatchers(
-            		    "/api/users/patient/register",
-            		    "/api/users/auth"
-            		)
-            		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-            .addFilterAfter(new CsrfCookieFilter(), UsernamePasswordAuthenticationFilter.class)
+            // Disable CSRF completely
+            .csrf(csrf -> csrf.disable())
             
             // JWT filters
             .addFilterBefore(
                 new JwtValidationFilter(jwtService, objectMapper),
                 UsernamePasswordAuthenticationFilter.class
             )
-				/*
-				 * .addFilterAfter( new JwtGenerationFilter(jwtService),
-				 * UsernamePasswordAuthenticationFilter.class )
-				 */
-            
+                
             // Authorization rules
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -149,7 +134,6 @@ public class ProjectSecurityConfig {
         
         return http.build();
     }
-     
     /**
      * Creates a delegating password encoder that supports multiple encoding formats.
      * 
