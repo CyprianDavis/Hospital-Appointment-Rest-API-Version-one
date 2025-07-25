@@ -45,7 +45,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             errorMessage = "Invalid username or password";
             errorCode = "BAD_CREDENTIALS";
         } else if (authException instanceof InsufficientAuthenticationException) {
-            errorMessage = "Invalid username or password";
+            errorMessage = "Full authentication is required to access this resource";
             errorCode = "UNAUTHENTICATED";
         } else {
             errorMessage = "Invalid username or password";
