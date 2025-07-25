@@ -57,7 +57,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      * @return list of schedule DTOs matching the name criteria
      */
     @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
-           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName,COALESCE(CONCAT(' ', p.otherName), '')), " +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName,COALESCE(CONCAT(' ', d.doctor.otherName), '')), " +
            "d.doctor.specialization,"+
            "d.dayOfWeek, " +
            "d.startTime, " +
@@ -65,7 +65,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
            "d.availableSlots, " +
            "d.isConfirmed) " +
            "FROM DoctorSchedule d WHERE " +
-           "LOWER(CONCAT(d.surName, ' ', d.givenName, COALESCE(CONCAT(' ', d.otherName), ''))) " +
+           "LOWER(CONCAT(d.doctor.surName, ' ', d.doctor.givenName, COALESCE(CONCAT(' ', d.doctor.otherName), ''))) " +
 	       "LIKE LOWER(CONCAT('%', :nameTerm, '%'))"
           )
     List<ViewDoctorSchedule> searchDtoByDoctorName(@Param("nameTerm") String nameTerm);
@@ -77,7 +77,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
      * @return list of schedule DTOs for the specified day
      */
     @Query("SELECT NEW com.davis.hospital_Appointment_Rest_API.dto.ViewDoctorSchedule(" +
-           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName), " +
+           "CONCAT(d.doctor.surName, ' ', d.doctor.givenName,COALESCE(CONCAT(' ', d.doctor.otherName), '')), " +
            "d.doctor.specialization,"+
            "d.dayOfWeek, " +
            "d.startTime, " +
